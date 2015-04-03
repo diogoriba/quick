@@ -9,63 +9,63 @@
 	}
 
 	// imports
-    var GameObject = com.dgsprb.quick.GameObject;
+	var GameObject = com.dgsprb.quick.GameObject;
 	var Point = com.dgsprb.quick.Point;
 	var Rect = com.dgsprb.quick.Rect;
 
-    // variables
-    var errors;
-    var failed;
-    var passed;
+	// variables
+	var errors;
+	var failed;
+	var passed;
 
 	// functions
 	function main() {
-        errors = [];
-        failed = 0;
-        passed = 0;
+		errors = [];
+		failed = 0;
+		passed = 0;
 
-        new GameObjectTest();
-        new PointTest();
-        new RectTest();
+		new GameObjectTest();
+		new PointTest();
+		new RectTest();
 
 		console.log("Passed: " + passed + "; Failed: " + failed + ".");
 
-        for (var i = 0; i < errors.length; ++i) {
-            var error = errors[i];
-            console.log(error);
-        }
+		for (var i = 0; i < errors.length; ++i) {
+			var error = errors[i];
+			console.log(error);
+		}
 	}
 
 	function assert(expected, value) {
 		if (expected !== value) {
-            ++failed;
-            var e = new Error();
-            var error = "Test failed for value " + value + ", expected " + expected + " - " + e.stack;
-            errors.push(error);
-        } else {
-            ++passed;
-        }
+			++failed;
+			var e = new Error();
+			var error = "Test failed for value " + value + ", expected " + expected + " - " + e.stack;
+			errors.push(error);
+		} else {
+			++passed;
+		}
 	}
 
-    // class GameObjectTest
-    var GameObjectTest = (function () {
-        function GameObjectTest() {
-            var gameObject;
+	// class GameObjectTest
+	var GameObjectTest = (function () {
+		function GameObjectTest() {
+			var gameObject;
 
-            // no args constructor
-            gameObject = new GameObject();
-            assert(0, gameObject.getHeight());
-            assert(0, gameObject.getWidth());
-            assert(0, gameObject.getX());
-            assert(0, gameObject.getY());
-            assert(null, gameObject.getColor());
-            assert(0, gameObject.getLayerIndex());
-            assert(false, gameObject.getEssential());
-            assert(false, gameObject.getSolid());
-        }
+			// no args constructor
+			gameObject = new GameObject();
+			assert(0, gameObject.getHeight());
+			assert(0, gameObject.getWidth());
+			assert(0, gameObject.getX());
+			assert(0, gameObject.getY());
+			assert(null, gameObject.getColor());
+			assert(0, gameObject.getLayerIndex());
+			assert(false, gameObject.getEssential());
+			assert(false, gameObject.getSolid());
+		}
 
-        return GameObjectTest;
-    })();
+		return GameObjectTest;
+	})();
 
 	// class PointTest
 	var PointTest = (function () {
