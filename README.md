@@ -17,17 +17,4 @@ Though mainly focused on building games to be released at the Chrome Web Store, 
   * Easy to use;
   * Open - Feel free to use, read and improve the code.
 
-## How to use
-1. Add a reference to the latest minified version:
-```
-<script src="https://cdn.rawgit.com/dgsprb/quick/master/target/engine-20150205.min.js"></script>
-```
-2. Initialize the engine passing the canvas and first scene as arguments:
-```
-function main() {
-    Quick.setName("My Game");
-    Quick.init(document.getElementById("canvas"), GameScene);
-}
-```
-
 Please check the [Wiki](https://github.com/dgsprb/quick/wiki) for API, demos, games and additional information.
