@@ -8,7 +8,6 @@
     var GameObject = com.dgsprb.quick.GameObject;
 	var Scene = com.dgsprb.quick.Scene;
 
-
 	function main() {
 		Quick.setName("Bricks");
 		Quick.init(document.getElementById("canvas"), GameScene);
@@ -177,7 +176,7 @@
 				this.setSpeedY(0);
 				this.setBottom(gameObject.getTop() - 1);
 				this.canJump = true;
-			} else if (collision.getTop() && this.getSpeedY() < 0) {
+			} else if (collision.getTop()) {
 				this.stop();
 				this.setTop(gameObject.getBottom() + 1);
 
