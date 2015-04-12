@@ -408,25 +408,13 @@
 			this.waitTouch();
 		}
 
-		Input.getGamepads = function () {
-			var gamepads;
-
-			if (navigator.getGamepads) {
-				gamepads = navigator.getGamepads();
-			} else {
-				gamepads = [];
-			}
-
-			return gamepads;
-		};
-
 		Input.getGamepadAxes = function (id) {
-			if (Input.getGamepads()[id]) return Input.getGamepads()[id].axes;
+			if (getGamepads()[id]) return getGamepads()[id].axes;
 			return [];
 		};
 
 		Input.getGamepadButtons = function (id, buttonEnum) {
-			if (Input.getGamepads()[id]) return Input.getGamepads()[id].buttons[buttonEnum].pressed;
+			if (getGamepads()[id]) return getGamepads()[id].buttons[buttonEnum].pressed;
 			return false;
 		};
 
@@ -436,7 +424,7 @@
 		};
 
 		Input.prototype.checkGamepads = function () {
-			if (Input.getGamepads()[this.gamepads]) this.addDevice(new Gamepad(this.gamepads++));
+			if (getGamepads()[this.gamepads]) this.addDevice(new Gamepad(this.gamepads++));
 		};
 
 		Input.prototype.checkQueues = function () {
@@ -488,6 +476,13 @@
 				that.addDevice(new Touch(event));
 			}
 		};
+
+		// private
+
+		function getGamepads() {
+			if (navigator.getGamepads) return navigator.getGamepads();
+			return [];
+		}
 
 		return Input;
 
