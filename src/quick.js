@@ -294,7 +294,7 @@
 		function Controller() {
 			this.active = {};
 			this.device = null;
-			this.held = {};
+			this.hold = {};
 		}
 
 		Controller.prototype.keyDown = function (commandEnum) {
@@ -302,7 +302,7 @@
 		};
 
 		Controller.prototype.keyPush = function (commandEnum) {
-			return (this.active[commandEnum] && !this.held[commandEnum]);
+			return (this.active[commandEnum] && !this.hold[commandEnum]);
 		};
 
 		Controller.prototype.setDevice = function (device) {
@@ -311,12 +311,12 @@
 
 		Controller.prototype.update = function () {
 			if (!this.device) return;
-			this.held = {};
+			this.hold = {};
 			var last = this.active;
 			this.active = this.device.getCommands();
 
 			for (var i in this.active) {
-				if (last[i]) this.held[i] = true;
+				if (last[i]) this.hold[i] = true;
 			}
 		};
 
