@@ -79,7 +79,6 @@
 
 		// override
 		FirstScene.prototype.getNext = function () {
-			console.log("#");
 			return new FirstScene();
 		};
 
