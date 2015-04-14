@@ -9,6 +9,8 @@
 	}
 
 	// imports
+	var CommandEnum = com.dgsprb.quick.CommandEnum;
+	var Controller = com.dgsprb.quick.Controller;
 	var GameObject = com.dgsprb.quick.GameObject;
 	var Point = com.dgsprb.quick.Point;
 	var Rect = com.dgsprb.quick.Rect;
@@ -24,6 +26,7 @@
 		failed = 0;
 		passed = 0;
 
+		new ControllerTest();
 		new GameObjectTest();
 		new PointTest();
 		new RectTest();
@@ -47,8 +50,44 @@
 		}
 	}
 
-	// class GameObjectTest
+	var ControllerTest = (function () {
+
+		function ControllerTest() {
+			var controller;
+
+			// no args constructor
+			controller = new Controller();
+
+			for (var key in CommandEnum) {
+				var value = CommandEnum[key];
+				assert(undefined, controller.keyDown(value));
+				assert(undefined, controller.keyPush(value));
+			}
+
+			// with all commands, first update
+			controller.setDevice(new DeviceMock());
+			assert(undefined, controller.update());
+
+			for (var key in CommandEnum) {
+				assert(true, controller.keyDown(CommandEnum[key]));
+				assert(true, controller.keyPush(CommandEnum[key]));
+			}
+
+			// with all commands, second update
+			assert(undefined, controller.update());
+
+			for (var key in CommandEnum) {
+				assert(true, controller.keyDown(CommandEnum[key]));
+				assert(false, controller.keyPush(CommandEnum[key]));
+			}
+		}
+
+		return ControllerTest;
+
+	})();
+
 	var GameObjectTest = (function () {
+
 		function GameObjectTest() {
 			var gameObject;
 
@@ -65,10 +104,11 @@
 		}
 
 		return GameObjectTest;
+
 	})();
 
-	// class PointTest
 	var PointTest = (function () {
+
 		function PointTest() {
 			var point;
 
@@ -132,9 +172,11 @@
 		}
 
 		return PointTest;
+
 	})();
 
 	var RectTest = (function () {
+
 		function RectTest() {
 			var rect;
 
@@ -264,9 +306,27 @@
 		}
 
 		return RectTest;
+
 	})();
 
-	// initialization
+	var DeviceMock = (function () {
+
+		function DeviceMock() {}
+
+		DeviceMock.prototype.getCommands = function () {
+			var result = {};
+
+			for (var key in CommandEnum) {
+				result[CommandEnum[key]] = true;
+			}
+
+			return result;
+		};
+
+		return DeviceMock;
+
+	})();
+
 	main();
 
 })();
