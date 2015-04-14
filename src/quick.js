@@ -298,7 +298,7 @@
 		}
 
 		Controller.prototype.keyDown = function (commandEnum) {
-			return (this.active[commandEnum]);
+			return this.active[commandEnum];
 		};
 
 		Controller.prototype.keyPush = function (commandEnum) {
@@ -1513,6 +1513,7 @@
 		"BaseTile" : BaseTile,
 		"BaseTransition" : BaseTransition,
 		"CommandEnum" : CommandEnum,
+		"Controller" : Controller,
 		"Frame" : Frame,
 		"GameObject" : GameObject,
 		"ImageFactory" : ImageFactory,
