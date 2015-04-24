@@ -604,7 +604,7 @@
 			gameObject.setScene(this);
 			this.nextObjects.push(gameObject);
 			gameObject.move(gameObject.getSpeedX() * -1, gameObject.getSpeedY() * -1);
-		}
+		};
 
 		Scene.prototype.build = function (map, TileClass) {
 			TileClass = TileClass || BaseTile;
@@ -657,15 +657,26 @@
 
 		Scene.prototype.getNext = function () {
 			return null;
-		}
+		};
+
+		Scene.prototype.getObjectsWithTag = function (tag) {
+			var result = [];
+
+			for (var i = 0; i < this.gameObjects.length; ++i) {
+				var gameObject = this.gameObjects[i];
+				if (gameObject.hasTag(tag)) result.push(gameObject);
+			}
+
+			return result;
+		};
 
 		Scene.prototype.getTick = function () {
 			return this.tick;
-		}
+		};
 
 		Scene.prototype.getTransition = function () {
 			return this.transition;
-		}
+		};
 
 		Scene.prototype.setExpiration = function (expiration) {
 			this.expiration = expiration;
@@ -675,7 +686,7 @@
 			this.transition = transition;
 		};
 
-		Scene.prototype.update = function () {}
+		Scene.prototype.update = function () {};
 
 		// private
 		function checkCollisions(gameObjects) {
@@ -1351,7 +1362,7 @@
 		};
 
 		GameObject.prototype.hasTag = function (tag) {
-			return this.tags[tag] ? true : false;
+			return this.tags[tag]
 		};
 
 		GameObject.prototype.getEssential = function () {
@@ -1425,7 +1436,7 @@
 		var SPACING = 0;
 
 		function Text(text) {
-			Rect.call(this);
+			GameObject.call(this);
 			this.setText(text || "");
 		}; Text.prototype = Object.create(GameObject.prototype);
 
