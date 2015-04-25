@@ -21,7 +21,7 @@
 	function main() {
 		Quick.setName("Flap Demo");
 		Quick.setNumberOfLayers(3);
-		Quick.init(document.getElementById("canvas"), GameScene);
+		Quick.init(function () { return new GameScene() });
 	}
 
 	// classes

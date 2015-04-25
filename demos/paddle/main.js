@@ -13,7 +13,7 @@
 	function main() {
 		Quick.setAutoScale(true);
 		Quick.setName("Paddle Demo");
-		Quick.init(document.getElementById("canvas"), FirstScene);
+		Quick.init(function () { return new FirstScene() });
 	}
 
 	var Background = (function () {
