@@ -882,6 +882,18 @@
 			return this.accelerationY;
 		};
 
+		Point.prototype.getCenter = function () {
+			return this;
+		};
+
+		Point.prototype.getCenterX = function () {
+			return this.x;
+		};
+
+		Point.prototype.getCenterY = function () {
+			return this.y;
+		};
+
 		Point.prototype.getSpeedX = function () {
 			return this.speedX;
 		};
@@ -917,6 +929,12 @@
 
 		Point.prototype.setAccelerationY = function (accelerationY) {
 			this.accelerationY = accelerationY || 0;
+		};
+
+		Point.prototype.setSpeedToPoint = function (speed, point) {
+			var squareDistance = Math.abs(this.getCenterX() - point.getX()) + Math.abs(this.getCenterY() - point.getY());
+			this.setSpeedX((point.getX() - this.getCenterX()) * speed / squareDistance);
+			this.setSpeedY((point.getY() - this.getCenterY()) * speed / squareDistance);
 		};
 
 		Point.prototype.setSpeedX = function (speedX) {
@@ -968,14 +986,17 @@
 			return this.getY() + this.getHeight() - 1;
 		};
 
+		// override
 		Rect.prototype.getCenter = function () {
 			return new Point(this.getCenterX(), this.getCenterY());
 		};
 
+		// override
 		Rect.prototype.getCenterX = function () {
 			return this.getX() + this.getHalfWidth();
 		};
 
+		// override
 		Rect.prototype.getCenterY = function () {
 			return this.getY() + this.getHalfHeight();
 		};

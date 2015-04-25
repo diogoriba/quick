@@ -116,6 +116,9 @@
 			point = new Point();
 			assert(0, point.getAccelerationX());
 			assert(0, point.getAccelerationY());
+			assert(point, point.getCenter());
+			assert(0, point.getCenterX());
+			assert(0, point.getCenterY());
 			assert(0, point.getSpeedX());
 			assert(0, point.getSpeedY());
 			assert(0, point.getX());
@@ -125,6 +128,9 @@
 			point = new Point(1, 2);
 			assert(0, point.getAccelerationX());
 			assert(0, point.getAccelerationY());
+			assert(point, point.getCenter());
+			assert(1, point.getCenterX());
+			assert(2, point.getCenterY());
 			assert(0, point.getSpeedX());
 			assert(0, point.getSpeedY());
 			assert(1, point.getX());
@@ -169,6 +175,16 @@
 			assert(0, point2.getSpeedY());
 			assert(12, point2.getX());
 			assert(13, point2.getY());
+
+			// speed to point
+			point1 = new Point();
+			point2 = new Point(100, 50);
+			point1.setSpeedToPoint(2, point2);
+			point2.setSpeedToPoint(2, point1);
+			assert(100 / 150 * 2, point1.getSpeedX());
+			assert(50 / 150 * 2, point1.getSpeedY());
+			assert(-100 / 150 * 2, point2.getSpeedX());
+			assert(-50 / 150 * 2, point2.getSpeedY());
 		}
 
 		return PointTest;
