@@ -10,7 +10,7 @@
 
 	function main() {
 		Quick.setName("Bricks");
-		Quick.init(document.getElementById("canvas"), GameScene);
+		Quick.init(function () { return new GameScene() });
 	}
 
 	var Background = (function () {
