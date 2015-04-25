@@ -44,17 +44,18 @@
 		var numberOfLayers = DEFAULT_NUMBER_OF_LAYERS;
 		var renderableLists = [];
 		var scene;
+		var sceneFactory;
 		var sound;
 		var transition;
 		var width = 0, height = 0;
 
 		var Quick = {};
 
-		Quick.init = function (canvasElement, SceneClass) {
-			canvas = canvasElement;
+		Quick.init = function (firstSceneFactory, canvasElement) {
+			sceneFactory = firstSceneFactory;
+			canvas = canvasElement || document.getElementsByTagName("canvas")[0];
 			width = canvas.width;
 			height = canvas.height;
-			FirstSceneClass = SceneClass;
 			images = document.getElementsByTagName("img");
 			input = new Input();
 			isRunning = true;
@@ -176,7 +177,7 @@
 				}
 			}
 
-			scene = new FirstSceneClass();
+			scene = sceneFactory();
 			loop();
 
 			function onTimeout() {
