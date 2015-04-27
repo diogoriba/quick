@@ -1061,11 +1061,12 @@
 		};
 
 		Rect.prototype.hasCollision = function (rect) {
-			if (this.getLeft() > rect.getRight()) return false;
-			if (this.getRight() < rect.getLeft()) return false;
-			if (this.getTop() > rect.getBottom()) return false;
-			if (this.getBottom() < rect.getTop()) return false;
-			return true;
+			return !(
+				this.getLeft() > rect.getRight() ||
+				this.getRight() < rect.getLeft() ||
+				this.getTop() > rect.getBottom() ||
+				this.getBottom() < rect.getTop()
+			);
 		};
 
 		Rect.prototype.increase = function (width, height) {
