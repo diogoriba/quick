@@ -607,17 +607,17 @@
 			gameObject.move(gameObject.getSpeedX() * -1, gameObject.getSpeedY() * -1);
 		};
 
-		Scene.prototype.build = function (map, TileClass) {
-			TileClass = TileClass || BaseTile;
+		Scene.prototype.build = function (map, tileFactory) {
+			tileFactory = tileFactory || function (id) { return new BaseTile(id) };
 
 			for (var i = 0; i < map.length; ++i) {
 				var line = map[i];
 
 				for (var j = 0; j < line.length; ++j) {
-					var code = map[i][j];
+					var id = map[i][j];
 
-					if (code) {
-						var tile = new TileClass(code);
+					if (id) {
+						var tile = tileFactory(id);
 						tile.setTop(i * tile.getHeight());
 						tile.setLeft(j * tile.getWidth());
 						this.add(tile);
@@ -1505,10 +1505,10 @@
 
 	var BaseTile = (function () {
 
-		function BaseTile(code) {
+		function BaseTile(id) {
 			GameObject.call(this);
-			this.setImageId(code);
-		}; BaseTile.prototype = Object.create(GameObject.prototype)
+			this.setImageId(id);
+		}; BaseTile.prototype = Object.create(GameObject.prototype);
 
 		return BaseTile;
 
@@ -1523,7 +1523,7 @@
 			this.setColor("Black");
 			this.setHeight(Quick.getCanvasHeight());
 			this.increase = Quick.getCanvasWidth() / FRAMES;
-		}; BaseTransition.prototype = Object.create(GameObject.prototype)
+		}; BaseTransition.prototype = Object.create(GameObject.prototype);
 
 		// override
 		BaseTransition.prototype.sync = function () {
