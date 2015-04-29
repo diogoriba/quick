@@ -27,6 +27,7 @@
 
 		var DEFAULT_AUTO_SCALE = true;
 		var DEFAULT_FRAME_TIME = 30;
+		var DEFAULT_KEEP_ASPECT = false;
 		var DEFAULT_NAME = "Game";
 		var DEFAULT_NUMBER_OF_LAYERS = 1;
 		var LOADING_TIMEOUT = 100;
@@ -36,6 +37,7 @@
 		var canvas;
 		var everyOther = true;
 		var frameTime;
+		var keepAspect = DEFAULT_KEEP_ASPECT;
 		var images;
 		var input;
 		var isRunning;
@@ -153,6 +155,10 @@
 			frameTime = customFrameTime || DEFAULT_FRAME_TIME;
 		};
 
+		Quick.setKeepAspect = function (customKeepAspect) {
+			keepAspect = customKeepAspect || DEFAULT_KEEP_ASPECT;
+		};
+
 		Quick.setName = function (customName) {
 			name = customName;
 			document.title = name;
@@ -234,8 +240,20 @@
 
 		function scale() {
 			if (!autoScale) return;
-			canvas.style.width = window.innerWidth + "px";
-			canvas.style.height = window.innerHeight + "px";
+			var width, height;
+
+			if (keepAspect) {
+				var proportion = window.innerWidth / canvas.width;
+				if (window.innerHeight < canvas.height * proportion) proportion = window.innerHeight / canvas.height;
+				width = canvas.width * proportion;
+				height = canvas.height * proportion
+			} else {
+				width = window.innerWidth;
+				height = window.innerHeight;
+			}
+
+			canvas.style.width = width + "px";
+			canvas.style.height = height + "px";
 		}
 
 		return Quick;
