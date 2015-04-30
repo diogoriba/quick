@@ -44,6 +44,8 @@
 		var isTransitioning = false;
 		var name = DEFAULT_NAME;
 		var numberOfLayers = DEFAULT_NUMBER_OF_LAYERS;
+		var realWidth = 0;
+		var realHeight = 0;
 		var renderableLists = [];
 		var scene;
 		var sceneFactory;
@@ -58,6 +60,8 @@
 			canvas = canvasElement || document.getElementsByTagName("canvas")[0];
 			width = canvas.width;
 			height = canvas.height;
+			realWidth = width;
+			realHeight = height;
 			images = document.getElementsByTagName("img");
 			input = new Input();
 			isRunning = true;
@@ -102,6 +106,14 @@
 			return height;
 		};
 
+		Quick.getCanvasOffsetLeft = function () {
+			return canvas.offsetLeft;
+		};
+
+		Quick.getCanvasOffsetTop = function () {
+			return canvas.offsetTop;
+		};
+
 		Quick.getCanvasRight = function () {
 			return width - 1;
 		};
@@ -120,6 +132,18 @@
 
 		Quick.getFrameTime = function () {
 			return frameTime;
+		};
+
+		Quick.getPointer = function (id) {
+			return input.getPointer(id);
+		};
+
+		Quick.getRealHeight = function () {
+			return realHeight;
+		};
+
+		Quick.getRealWidth = function () {
+			return realWidth;
 		};
 
 		Quick.mute = function () {
@@ -252,6 +276,8 @@
 				height = window.innerHeight;
 			}
 
+			realWidth = width;
+			realHeight = height;
 			canvas.style.width = width + "px";
 			canvas.style.height = height + "px";
 		}
@@ -308,6 +334,149 @@
 
 	})();
 
+	var Mouse = (function () {
+
+		function Mouse(event) {
+			var that = this;
+			this.buffer = false;
+			this.position = new Point();
+			addEventListener("mousedown", onMouseDown, false);
+			addEventListener("mouseup", onMouseUp, false);
+			addEventListener("mousemove", onMouseMove, false);
+			onMouseDown(event);
+
+			function onMouseDown(event) {
+				event.preventDefault();
+				that.buffer = true;
+				// that.updateCoordinates(event);
+			}
+
+			function onMouseUp(event) {
+				event.preventDefault();
+				that.buffer = false;
+				// that.updateCoordinates(event);
+			}
+
+			function onMouseMove(event) {
+				event.preventDefault();
+				that.updateCoordinates(event);
+			}
+		}
+
+		Mouse.prototype.getCommand = function () {
+			return this.buffer;
+		};
+
+		Mouse.prototype.getX = function () {
+			return this.position.getX();
+		};
+
+		Mouse.prototype.getY = function () {
+			return this.position.getY();
+		};
+
+		Mouse.prototype.updateCoordinates = function (event) {
+			this.position.setX(event.x);
+			this.position.setY(event.y);
+		};
+
+		return Mouse;
+
+	})();
+
+	var Touch = (function () {
+
+		function Touch(event) {
+			var that = this;
+			this.buffer = false;
+			this.position = new Point();
+			addEventListener("touchstart", onTouchStart, false);
+			addEventListener("touchend", onTouchEnd, false);
+			addEventListener("touchmove", onTouchMove, false);
+			onTouchStart(event);
+
+			function onTouchStart(event) {
+				event.preventDefault();
+				that.buffer = true;
+				that.updateCoordinates(event);
+			}
+
+			function onTouchEnd(event) {
+				event.preventDefault();
+				this.buffer = false;
+				that.updateCoordinates(event);
+			}
+
+			function onTouchMove(event) {
+				event.preventDefault();
+				that.updateCoordinates(event);
+			}
+		}
+
+		Touch.prototype.getCommand = function () {
+			return this.buffer;
+		};
+
+		Touch.prototype.getX = function () {
+			return this.position.getX();
+		};
+
+		Touch.prototype.getY = function () {
+			return this.position.getY();
+		};
+
+		Touch.prototype.updateCoordinates = function (event) {
+			var touches = event.changedTouches;
+			var touch = touches[0];
+			this.x = touch.pageX;
+			this.y = touch.pageY;
+		};
+
+		return Touch;
+
+	})();
+
+	var Pointer = (function () {
+
+		function Pointer() {
+			this.active = false;
+			this.device = null;
+			this.hold = false;
+			this.position = new Point();
+		}
+
+		Pointer.prototype.getDown = function () {
+			return this.active;
+		};
+
+		Pointer.prototype.getPush = function () {
+			return this.active && !this.hold;
+		};
+
+		Pointer.prototype.setDevice = function (device) {
+			this.device = device;
+		};
+
+		Pointer.prototype.update = function () {
+			if (!this.device) return;
+			this.hold = false;
+			var last = this.active;
+			this.active = this.device.getCommand();
+			if (this.active && last) this.hold = true;
+			var x = Math.floor((this.device.getX() - Quick.getCanvasOffsetLeft()) * Quick.getCanvasWidth() / Quick.getRealWidth());
+			var y = Math.floor((this.device.getY() - Quick.getCanvasOffsetTop()) * Quick.getCanvasHeight() / Quick.getRealHeight());
+			this.position.setX(x);
+			this.position.setY(y);
+		};
+
+		Pointer.prototype.getPosition = function () {
+			return this.position;
+		};
+
+		return Pointer;
+
+	})();
+
 	var Controller = (function () {
 
 		function Controller() {
@@ -321,7 +490,7 @@
 		};
 
 		Controller.prototype.keyPush = function (commandEnum) {
-			return (this.active[commandEnum] && !this.hold[commandEnum]);
+			return this.active[commandEnum] && !this.hold[commandEnum];
 		};
 
 		Controller.prototype.setDevice = function (device) {
@@ -418,12 +587,15 @@
 	var Input = (function () {
 
 		function Input() {
-			this.controllerQueue = [];
 			this.controllers = [];
-			this.deviceQueue = [];
-			this.deviceRequestQueue = [];
+			this.controllerQueue = [];
+			this.controllerRequestQueue = [];
+			this.pointers = [];
+			this.pointerQueue = [];
+			this.pointerRequestQueue = [];
 			this.gamepads = 0;
 			this.waitKeyboard();
+			this.waitMouse();
 			this.waitTouch();
 		}
 
@@ -437,19 +609,32 @@
 			return false;
 		};
 
-		Input.prototype.addDevice = function (device) {
-			this.deviceQueue.push(device);
-			this.checkQueues();
+		Input.prototype.addController = function (device) {
+			this.controllerQueue.push(device);
+			this.checkControllerQueues();
+		};
+
+		Input.prototype.addPointer = function (device) {
+			this.pointerQueue.push(device);
+			this.checkPointerQueues();
 		};
 
 		Input.prototype.checkGamepads = function () {
-			if (getGamepads()[this.gamepads]) this.addDevice(new Gamepad(this.gamepads++));
+			if (getGamepads()[this.gamepads]) this.addController(new Gamepad(this.gamepads++));
 		};
 
-		Input.prototype.checkQueues = function () {
-			if (this.deviceRequestQueue.length > 0 && this.deviceQueue.length > 0) {
-				var requester = this.deviceRequestQueue.shift();
-				var device = this.deviceQueue.shift();
+		Input.prototype.checkControllerQueues = function () {
+			if (this.controllerRequestQueue.length > 0 && this.controllerQueue.length > 0) {
+				var requester = this.controllerRequestQueue.shift();
+				var device = this.controllerQueue.shift();
+				requester.setDevice(device);
+			}
+		};
+
+		Input.prototype.checkPointerQueues = function () {
+			if (this.pointerRequestQueue.length > 0 && this.pointerQueue.length > 0) {
+				var requester = this.pointerRequestQueue.shift();
+				var device = this.pointerQueue.shift();
 				requester.setDevice(device);
 			}
 		};
@@ -460,11 +645,24 @@
 			if (this.controllers.length < id + 1) {
 				var controller = new Controller();
 				this.controllers.push(controller);
-				this.deviceRequestQueue.push(controller);
-				this.checkQueues();
+				this.controllerRequestQueue.push(controller);
+				this.checkControllerQueues();
 			}
 
 			return this.controllers[id];
+		};
+
+		Input.prototype.getPointer = function (id) {
+			var id = id || 0;
+
+			if (this.pointers.length < id + 1) {
+				var pointer = new Pointer();
+				this.pointers.push(pointer);
+				this.pointerRequestQueue.push(pointer);
+				this.checkPointerQueues();
+			}
+
+			return this.pointers[id];
 		};
 
 		Input.prototype.update = function () {
@@ -474,25 +672,43 @@
 				var controller = this.controllers[i];
 				controller.update();
 			}
+
+			for (var i in this.pointers) {
+				var pointer = this.pointers[i];
+				pointer.update();
+			}
 		};
 
 		Input.prototype.waitKeyboard = function () {
+			var EVENT = "keydown";
 			var that = this;
-			addEventListener("keydown", onKeyDown, false);
+			addEventListener(EVENT, onKeyDown, false);
 
 			function onKeyDown(event) {
-				removeEventListener("keydown", onKeyDown, false);
-				that.addDevice(new Keyboard(event));
+				removeEventListener(EVENT, onKeyDown, false);
+				that.addController(new Keyboard(event));
+			}
+		};
+
+		Input.prototype.waitMouse = function () {
+			var EVENT = "mousedown";
+			var that = this;
+			addEventListener(EVENT, onMouseDown, false);
+
+			function onMouseDown(event) {
+				removeEventListener(EVENT, onMouseDown, false);
+				that.addPointer(new Mouse(event));
 			}
 		};
 
 		Input.prototype.waitTouch = function () {
+			var EVENT = "touchstart";
 			var that = this;
-			addEventListener("touchstart", onTouchStart, false);
+			addEventListener(EVENT, onTouchStart, false);
 
 			function onTouchStart(event) {
-				removeEventListener("touchstart", onTouchStart, false);
-				that.addDevice(new Touch(event));
+				removeEventListener(EVENT, onTouchStart, false);
+				that.addPointer(new Touch(event));
 			}
 		};
 
@@ -822,53 +1038,6 @@
 		};
 
 		return Sound;
-
-	})();
-
-	var Touch = (function () {
-
-		function Touch(event) {
-			var that = this;
-			this.buffer = {};
-			addEventListener("touchend", onTouchEnd, false);
-			addEventListener("touchmove", onTouchMove, false);
-			addEventListener("touchstart", onTouchStart, false);
-			onTouchStart(event);
-
-			function onTouchEnd(event) {
-				event.preventDefault();
-				// TODO: get command from touch position
-				onTouch(CommandEnum.A, false);
-			}
-
-			function onTouchMove(event) {
-				event.preventDefault();
-				// TODO: get command from touch position
-				onTouch(CommandEnum.LEFT, false);
-			}
-
-			function onTouchStart(event) {
-				event.preventDefault();
-				// TODO: get command from touch position
-				onTouch(CommandEnum.A, true);
-			}
-
-			function onTouch(command, isDown) {
-				that.buffer[command] = isDown;
-			}
-		}
-
-		Touch.prototype.getCommands = function () {
-			var result = {};
-
-			for (var i in this.buffer) {
-				if (this.buffer[i]) result[i] = true;
-			}
-
-			return result;
-		};
-
-		return Touch;
 
 	})();
 

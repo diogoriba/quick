@@ -140,6 +140,7 @@
 		function Player() {
 			GameObject.call(this);
 			this.controller = Quick.getController();
+			this.pointer = Quick.getPointer();
 			this.setAnimation(ANIMATION);
 			this.setEssential();
 			this.setLayerIndex(1);
@@ -175,8 +176,8 @@
 				this.setTop(0);
 			}
 
-			// checks for space bar for flapping or just apply some gravity
-			if (this.controller.keyPush(CommandEnum.A)) {
+			// checks for A ou click for flapping or just apply some gravity
+			if (this.controller.keyPush(CommandEnum.A) || this.pointer.getPush()) {
 				this.flap();
 			} else if (this.getSpeedY() < 7) {
 				this.setSpeedY(this.getSpeedY() + 1);
