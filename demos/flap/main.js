@@ -47,7 +47,7 @@
 
 		// override
 		Cloud.prototype.offBoundary = function () {
-			this.setLeft(Quick.getCanvasWidth() - 1);
+			this.setLeft(Quick.getCanvasRight());
 		};
 
 		return Cloud;
@@ -110,7 +110,7 @@
 			fog2.setSpeedX(-1);
 			this.add(fog2);
 			this.player = new Player();
-			this.wall = new Wall(this);
+			this.wall = new Wall();
 			this.add(this.player);
 			this.add(this.wall);
 		}; GameScene.prototype = Object.create(Scene.prototype);
@@ -190,39 +190,42 @@
 
 	var Wall = (function () {
 
-		function Wall(scene) {
+		function Wall() {
 			GameObject.call(this);
-			this.scene = scene;
 			// the wall is only valid within our screen limits
 			this.setBoundary(new Rect(0, 0, Quick.getCanvasWidth(), Quick.getCanvasHeight()));
 			this.setColor("Gray");
 			this.setWidth(16);
 			this.setHeight(56);
-			this.setLeft(Quick.getCanvasWidth() - 1);
+			this.setLeft(Quick.getCanvasRight());
 			this.setTop(Quick.random(Quick.getCanvasHeight() - this.getHeight()));
 			this.setSpeedX(-2);
+		}; Wall.prototype = Object.create(GameObject.prototype);
 
+		// override
+		Wall.prototype.init = function () {
 			this.top = new Column();
 			this.top.setBottom(this.getTop() - 1);
 			this.top.setSpeedX(this.getSpeedX());
 			this.top.setWidth(this.getWidth());
 			this.top.setLeft(this.getLeft());
-			this.scene.add(this.top);
+			this.getScene().add(this.top);
 
 			this.bottom = new Column();
 			this.bottom.setTop(this.getBottom() + 1);
 			this.bottom.setSpeedX(this.getSpeedX());
 			this.bottom.setWidth(this.getWidth());
 			this.bottom.setLeft(this.getLeft());
-			this.scene.add(this.bottom);
-		}; Wall.prototype = Object.create(GameObject.prototype);
+			this.getScene().add(this.bottom);
+		};
 
 		// override
 		Wall.prototype.offBoundary = function () {
+			console.log("#");
 			this.expire();
 			this.bottom.expire();
 			this.top.expire();
-			this.scene.add(new Wall(this.scene));
+			this.getScene().add(new Wall());
 		};
 
 		return Wall;
