@@ -827,6 +827,7 @@
 	var Scene = (function () {
 
 		function Scene() {
+			this.delegate = null;
 			this.gameObjects = [];
 			this.nextObjects = [];
 			this.expiration = -1;
@@ -913,6 +914,10 @@
 			return this.transition;
 		};
 
+		Scene.prototype.setDelegate = function (delegate) {
+			this.delegate = delegate;
+		};
+
 		Scene.prototype.setExpiration = function (expiration) {
 			this.expiration = expiration;
 		};
@@ -921,7 +926,9 @@
 			this.transition = transition;
 		};
 
-		Scene.prototype.update = function () {};
+		Scene.prototype.update = function () {
+			this.delegate && this.delegate.update && this.delegate.update();
+		};
 
 		// private
 		function checkCollisions(gameObjects) {
@@ -1117,6 +1124,11 @@
 
 		Point.prototype.setAccelerationY = function (accelerationY) {
 			this.accelerationY = accelerationY || 0;
+		};
+
+		Point.prototype.setPosition = function (x, y) {
+			this.setX(x);
+			this.setY(y);
 		};
 
 		Point.prototype.setSpeedToPoint = function (speed, point) {
@@ -1645,9 +1657,9 @@
 		var SPACE = 4;
 		var SPACING = 0;
 
-		function Text(text) {
+		function Text(string) {
 			GameObject.call(this);
-			this.setText(text || "");
+			this.setString(string || "");
 		}; Text.prototype = Object.create(GameObject.prototype);
 
 		Text.prototype.parse = function (graphics) {
@@ -1656,8 +1668,8 @@
 			var x = 0;
 			var y = 0;
 
-			for (var i = 0; i < this.text.length; ++i) {
-				var character = this.text[i];
+			for (var i = 0; i < this.string.length; ++i) {
+				var character = this.string[i];
 
 				if (character == " ") {
 					x += SPACE + SPACING;
@@ -1682,8 +1694,8 @@
 			this.parse(graphics);
 		};
 
-		Text.prototype.setText = function (text) {
-			this.text = text;
+		Text.prototype.setString = function (string) {
+			this.string = string;
 			this.parse();
 		};
 
