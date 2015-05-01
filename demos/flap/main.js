@@ -221,7 +221,6 @@
 
 		// override
 		Wall.prototype.offBoundary = function () {
-			console.log("#");
 			this.expire();
 			this.bottom.expire();
 			this.top.expire();
