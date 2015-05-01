@@ -838,6 +838,7 @@
 
 		Scene.prototype.add = function (gameObject) {
 			gameObject.setScene(this);
+			gameObject.init();
 			this.nextObjects.push(gameObject);
 			gameObject.move(gameObject.getSpeedX() * -1, gameObject.getSpeedY() * -1);
 		};
@@ -1515,8 +1516,10 @@
 
 		// override
 		Sprite.prototype.sync = function () {
+			var result = Rect.prototype.sync.call(this);
 			if (this.animation && this.animation.update()) this.onAnimationLoop();
-			return Rect.prototype.sync.call(this);
+			if (this.boundary && !this.hasCollision(this.boundary)) this.offBoundary();
+			return result;
 		};
 
 		return Sprite;
@@ -1550,6 +1553,10 @@
 			return this.color;
 		};
 
+		GameObject.prototype.getEssential = function () {
+			return this.isEssential;
+		};
+
 		GameObject.prototype.getExpired = function () {
 			return this.isExpired;
 		};
@@ -1562,6 +1569,10 @@
 			return this.scene;
 		};
 
+		GameObject.prototype.getSolid = function () {
+			return this.isSolid;
+		};
+
 		GameObject.prototype.getTick = function () {
 			return this.tick;
 		};
@@ -1570,14 +1581,10 @@
 			return this.tags[tag]
 		};
 
-		GameObject.prototype.getEssential = function () {
-			return this.isEssential;
+		GameObject.prototype.init = function () {
+			this.delegate && this.delegate.init && this.delegate.init();
 		};
-
-		GameObject.prototype.getSolid = function () {
-			return this.isSolid;
-		};
-
+		
 		GameObject.prototype.onCollision = function (gameObject) {
 			this.delegate && this.delegate.onCollision && this.delegate.onCollision(gameObject);
 		};
