@@ -892,7 +892,7 @@
 		}
 
 		Scene.prototype.getNext = function () {
-			return null;
+			if (this.delegate && this.delegate.getNext) return this.delegate.getNext();
 		};
 
 		Scene.prototype.getObjectsWithTag = function (tag) {
