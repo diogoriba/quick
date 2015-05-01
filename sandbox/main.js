@@ -16,6 +16,16 @@
 	// functions
 	function main() {
 		Quick.setName("Quick Sandbox");
+
+		console.log("Welcome to Quick Sandbox!\n" +
+			"\n" +
+			"You can start by creating a scene:\n" +
+			"// var scene = new Scene()\n" +
+			"\n" +
+			"Then initializing Quick with it:\n" +
+			"// Quick.init(function () { return scene })\n" +
+			"\n" +
+			"Have fun!");
 	}
 
 	main();
