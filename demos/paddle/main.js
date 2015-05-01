@@ -92,6 +92,7 @@
 			GameObject.call(this);
 			this.addTag("paddle");
 			this.controller = Quick.getController();
+			this.pointer = Quick.getPointer();
 			this.setImageId("paddleSprite");
 			this.setSolid();
 			this.setCenterX(Quick.getCanvasWidth() / 2);
@@ -100,6 +101,12 @@
 
 		// override
 		Paddle.prototype.update = function () {
+			var position = this.pointer.getPosition();
+
+			if (position.getY() > 0) {
+				this.setCenterX(position.getX());
+			}
+
 			if (this.controller.keyDown(CommandEnum.LEFT) && this.getLeft() > 0) {
 				this.moveX(-4);
 			}
