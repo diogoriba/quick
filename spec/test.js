@@ -14,6 +14,7 @@
 	var GameObject = com.dgsprb.quick.GameObject;
 	var Point = com.dgsprb.quick.Point;
 	var Rect = com.dgsprb.quick.Rect;
+	var Sprite = com.dgsprb.quick.Sprite;
 
 	// variables
 	var errors;
@@ -30,6 +31,7 @@
 		new GameObjectTest();
 		new PointTest();
 		new RectTest();
+		new SpriteTest();
 
 		console.log("Passed: " + passed + "; Failed: " + failed + ".");
 
@@ -322,6 +324,53 @@
 		}
 
 		return RectTest;
+
+	})();
+
+	var SpriteTest = (function () {
+
+		function SpriteTest() {
+			var sprite;
+			var delegate;
+			var offBoundaryCalled;
+
+			// no args constructor
+			sprite = new Sprite();
+			assert(0, sprite.getLeft());
+			assert(0, sprite.getTop());
+
+			// on boundary
+			sprite = new Sprite();
+			sprite.setSize(16);
+			offBoundaryCalled = false;
+
+			sprite.setDelegate({
+				offBoundary: function () {
+					offBoundaryCalled = true;
+				}
+			});
+
+			sprite.setBoundary(new Rect(0, 0, 200, 200));
+			sprite.sync();
+			assert(false, offBoundaryCalled);
+
+			// off boundary
+			sprite = new Sprite();
+			sprite.setSize(16);
+			offBoundaryCalled = false;
+
+			sprite.setDelegate({
+				offBoundary: function () {
+					offBoundaryCalled = true;
+				}
+			});
+
+			sprite.setBoundary(new Rect(20, 20, 100, 100));
+			sprite.sync();
+			assert(true, offBoundaryCalled);
+		}
+
+		return SpriteTest;
 
 	})();
 

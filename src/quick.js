@@ -1744,6 +1744,7 @@
 		"Quick" : Quick,
 		"Rect" : Rect,
 		"Scene" : Scene,
+		"Sprite" : Sprite,
 		"Text" : Text
 	};
 
