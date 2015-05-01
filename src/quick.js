@@ -1464,11 +1464,16 @@
 		function Sprite() {
 			Rect.call(this);
 			this.animation = null;
+			this.boundary = null;
 			this.delegate = null;
 		}; Sprite.prototype = Object.create(Rect.prototype);
 
 		Sprite.prototype.getImage = function () {
 			return this.animation.getImage();
+		};
+
+		Sprite.prototype.offBoundary = function () {
+			this.delegate && this.delegate.offBoundary && this.delegate.offBoundary();
 		};
 
 		Sprite.prototype.onAnimationLoop = function () {
@@ -1490,6 +1495,10 @@
 			this.animation.setFrameIndex(0);
 			this.setHeight(this.animation.getHeight());
 			this.setWidth(this.animation.getWidth());
+		};
+
+		Sprite.prototype.setBoundary = function (rect) {
+			this.boundary = rect;
 		};
 
 		Sprite.prototype.setDelegate = function (delegate) {
@@ -1514,36 +1523,10 @@
 
 	})();
 
-	var BoundSprite = (function () {
-
-		function BoundSprite(animations) {
-			Sprite.call(this, animations);
-			this.boundary = null;
-		}; BoundSprite.prototype = Object.create(Sprite.prototype);
-
-		BoundSprite.prototype.setBoundary = function (rect) {
-			this.boundary = rect;
-		};
-
-		BoundSprite.prototype.offBoundary = function () {
-			this.delegate && this.delegate.offBoundary && this.delegate.offBoundary();
-		};
-
-		// override
-		BoundSprite.prototype.sync = function () {
-			var result = Sprite.prototype.sync.call(this); 
-			if (this.boundary && !this.hasCollision(this.boundary)) this.offBoundary();
-			return result;
-		};
-
-		return BoundSprite;
-
-	})();
-
 	var GameObject = (function () {
 
 		function GameObject() {
-			BoundSprite.call(this);
+			Sprite.call(this);
 			this.color = null;
 			this.layerIndex = 0;
 			this.isEssential = false;
@@ -1553,7 +1536,7 @@
 			this.scene = null;
 			this.tags = {};
 			this.tick = 0;
-		}; GameObject.prototype = Object.create(BoundSprite.prototype);
+		}; GameObject.prototype = Object.create(Sprite.prototype);
 
 		GameObject.prototype.addTag = function (tag) {
 			this.tags[tag] = true;
@@ -1634,14 +1617,14 @@
 				graphics.fillRect(x, y, this.getWidth(), this.getHeight());
 			}
 
-			BoundSprite.prototype.render.call(this, graphics);
+			Sprite.prototype.render.call(this, graphics);
 		};
 
 		// override
 		GameObject.prototype.sync = function () {
 			if (this.getExpired()) return true;
 			++this.tick;
-			return BoundSprite.prototype.sync.call(this);
+			return Sprite.prototype.sync.call(this);
 		};
 
 		GameObject.prototype.update = function () {
