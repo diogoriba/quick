@@ -6,6 +6,14 @@
 	if (typeof(window) == "undefined") {
 		global.window = global;
 		require("../src/quick.js");
+
+		global.document = {
+			getElementById: function (id) {
+				return {
+					width: 10
+				}
+			}
+		}
 	}
 
 	// imports
@@ -15,6 +23,7 @@
 	var Point = com.dgsprb.quick.Point;
 	var Rect = com.dgsprb.quick.Rect;
 	var Sprite = com.dgsprb.quick.Sprite;
+	var Text = com.dgsprb.quick.Text;
 
 	// variables
 	var errors;
@@ -32,6 +41,7 @@
 		new PointTest();
 		new RectTest();
 		new SpriteTest();
+		new TextTest();
 
 		console.log("Passed: " + passed + "; Failed: " + failed + ".");
 
@@ -371,6 +381,28 @@
 		}
 
 		return SpriteTest;
+
+	})();
+
+	var TextTest = (function () {
+
+		function TextTest() {
+			var text;
+
+			// no args constructor
+			text = new Text();
+
+			// all args constructor
+			text = new Text("whatever");
+
+			// setString
+			text.setString("test");
+
+			// getString
+			assert("test", text.getString());
+		}
+
+		return TextTest;
 
 	})();
 
