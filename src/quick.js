@@ -1652,6 +1652,10 @@
 			this.setString(string || "");
 		}; Text.prototype = Object.create(GameObject.prototype);
 
+		Text.prototype.getString = function () {
+			return this.string;
+		};
+
 		Text.prototype.parse = function (graphics) {
 			var height = 0;
 			var width = 0;
