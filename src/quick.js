@@ -300,7 +300,7 @@
 
 		ImageFactory.rotate = function (image, degrees) {
 			if (degrees % 360 == 0 ) return image;
-			var radians = degrees * Math.PI / 180;
+			var radians = toRadians(degrees);
 			var canvas = document.createElement("canvas");
 
 			if (degrees == 90 || degrees == 270) {
@@ -1132,6 +1132,12 @@
 			this.setY(y);
 		};
 
+		Point.prototype.setSpeedToAngle = function (speed, degrees) {
+			var radians = toRadians(degrees);
+			this.setSpeedX(speed * Math.cos(radians));
+			this.setSpeedY(speed * Math.sin(radians));
+		};
+
 		Point.prototype.setSpeedToPoint = function (speed, point) {
 			var squareDistance = Math.abs(this.getCenterX() - point.getX()) + Math.abs(this.getCenterY() - point.getY());
 			this.setSpeedX((point.getX() - this.getCenterX()) * speed / squareDistance);
@@ -1730,6 +1736,10 @@
 		return BaseTransition;
 
 	})();
+
+	function toRadians(degrees) {
+		return degrees * Math.PI / 180;
+	}
 
 	// exports
 	if (!window.com) window.com = {};
