@@ -203,6 +203,21 @@
 			assert(0, Math.round(point.getSpeedX()));
 			assert(-1, Math.round(point.getSpeedY()));
 
+			// get angle
+			point = new Point();
+			point.setSpeedX(1);
+			point.setSpeedY(1);
+			assert(45, point.getAngle());
+			point.setSpeedX(-1);
+			point.setSpeedY(1);
+			assert(135, point.getAngle());
+			point.setSpeedX(-1);
+			point.setSpeedY(-1);
+			assert(-135, point.getAngle());
+			point.setSpeedX(1);
+			point.setSpeedY(-1);
+			assert(-45, point.getAngle());
+
 			// speed to point
 			point1 = new Point();
 			point2 = new Point(100, 50);
