@@ -86,9 +86,13 @@
 			sound.fadeOut();
 		};
 
+		Quick.getBoundary = function () {
+			return new Rect(0, 0, Quick.getCanvasWidth(), Quick.getCanvasHeight());
+		};
+
 		Quick.getCanvasBottom = function () {
 			return height - 1;
-		}
+		};
 
 		Quick.getCanvasCenter = function () {
 			return new Point(this.getCanvasCenterX(), this.getCanvasCenterY());
@@ -1078,6 +1082,10 @@
 			return this.accelerationY;
 		};
 
+		Point.prototype.getAngle = function () {
+			return toDegrees(Math.atan2(this.getSpeedY(), this.getSpeedX()));
+		};
+
 		Point.prototype.getCenter = function () {
 			return this;
 		};
@@ -1480,7 +1488,11 @@
 		};
 
 		Sprite.prototype.offBoundary = function () {
-			this.delegate && this.delegate.offBoundary && this.delegate.offBoundary();
+			if (this.delegate && this.delegate.offBoundary) {
+				this.delegate.offBoundary();
+			} else {
+				this.expire();
+			}
 		};
 
 		Sprite.prototype.onAnimationLoop = function () {
@@ -1505,7 +1517,7 @@
 		};
 
 		Sprite.prototype.setBoundary = function (rect) {
-			this.boundary = rect;
+			this.boundary = rect || Quick.getBoundary();
 		};
 
 		Sprite.prototype.setDelegate = function (delegate) {
@@ -1736,6 +1748,10 @@
 		return BaseTransition;
 
 	})();
+
+	function toDegrees(radians) {
+		return radians * 180 / Math.PI;
+	}
 
 	function toRadians(degrees) {
 		return degrees * Math.PI / 180;
