@@ -1058,6 +1058,8 @@
 		function Point(x, y) {
 			this.setAccelerationX();
 			this.setAccelerationY();
+			this.setMaxSpeedX();
+			this.setMaxSpeedY();
 			this.setSpeedX();
 			this.setSpeedY();
 			this.setX(x || 0);
@@ -1135,6 +1137,14 @@
 			this.accelerationY = accelerationY || 0;
 		};
 
+		Point.prototype.setMaxSpeedX = function (maxSpeedX) {
+			this.maxSpeedX = maxSpeedX || 0;
+		};
+
+		Point.prototype.setMaxSpeedY = function (maxSpeedY) {
+			this.maxSpeedY = maxSpeedY || 0;
+		};
+
 		Point.prototype.setPosition = function (x, y) {
 			this.setX(x);
 			this.setY(y);
@@ -1175,7 +1185,9 @@
 
 		Point.prototype.sync = function () {
 			this.setSpeedX(this.getSpeedX() + this.accelerationX);
+			if (this.maxSpeedX && this.getSpeedX() > this.maxSpeedX) this.setSpeedX(this.maxSpeedX);
 			this.setSpeedY(this.getSpeedY() + this.accelerationY);
+			if (this.maxSpeedY && this.getSpeedY() > this.maxSpeedY) this.setSpeedY(this.maxSpeedY);
 			this.move(this.getSpeedX(), this.getSpeedY());
 			return false;
 		};

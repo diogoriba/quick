@@ -227,6 +227,22 @@
 			assert(50 / 150 * 2, point1.getSpeedY());
 			assert(-100 / 150 * 2, point2.getSpeedX());
 			assert(-50 / 150 * 2, point2.getSpeedY());
+
+			// max speed
+			point = new Point();
+			point.setAccelerationX(1);
+			point.setAccelerationY(2);
+			point.setMaxSpeedX(2);
+			point.setMaxSpeedY(4);
+			point.sync();
+			assert(1, point.getSpeedX());
+			assert(2, point.getSpeedY());
+			point.sync();
+			assert(2, point.getSpeedX());
+			assert(4, point.getSpeedY());
+			point.sync();
+			assert(2, point.getSpeedX());
+			assert(4, point.getSpeedY());
 		}
 
 		return PointTest;
