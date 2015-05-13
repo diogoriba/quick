@@ -847,7 +847,7 @@
 			gameObject.move(gameObject.getSpeedX() * -1, gameObject.getSpeedY() * -1);
 		};
 
-		Scene.prototype.build = function (map, tileFactory) {
+		Scene.prototype.build = function (map, tileFactory, offsetX, offsetY) {
 			tileFactory = tileFactory || function (id) { return new BaseTile(id) };
 
 			for (var i = 0; i < map.length; ++i) {
@@ -858,8 +858,10 @@
 
 					if (id) {
 						var tile = tileFactory(id);
-						tile.setTop(i * tile.getHeight());
-						tile.setLeft(j * tile.getWidth());
+						var x = offsetX ? offsetX : tile.getWidth();
+						var y = offsetY ? offsetY : tile.getHeight();
+						tile.setTop(i * y);
+						tile.setLeft(j * x);
 						this.add(tile);
 					}
 				}
