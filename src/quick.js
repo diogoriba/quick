@@ -150,6 +150,10 @@
 			return realWidth;
 		};
 
+		Quick.load = function () {
+			return localStorage.saveData && JSON.parse(localStorage.saveData);
+		};
+
 		Quick.mute = function () {
 			sound.mute();
 		};
@@ -173,6 +177,10 @@
 			var raw = random * (ceil + 1);
 			var result = Math.floor(raw);
 			return result;
+		};
+
+		Quick.save = function (data) {
+			localStorage.saveData = JSON.stringify(data);
 		};
 
 		Quick.setAutoScale = function (customAutoScale) {
