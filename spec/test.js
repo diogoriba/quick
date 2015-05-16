@@ -5,6 +5,7 @@
 	// node.js support
 	if (typeof(window) == "undefined") {
 		global.window = global;
+		global.localStorage = {};
 		require("../src/quick.js");
 
 		global.document = {
@@ -21,6 +22,7 @@
 	var Controller = com.dgsprb.quick.Controller;
 	var GameObject = com.dgsprb.quick.GameObject;
 	var Point = com.dgsprb.quick.Point;
+	var Quick = com.dgsprb.quick.Quick;
 	var Rect = com.dgsprb.quick.Rect;
 	var Sprite = com.dgsprb.quick.Sprite;
 	var Text = com.dgsprb.quick.Text;
@@ -39,6 +41,7 @@
 		new ControllerTest();
 		new GameObjectTest();
 		new PointTest();
+		new QuickTest();
 		new RectTest();
 		new SpriteTest();
 		new TextTest();
@@ -246,6 +249,22 @@
 		}
 
 		return PointTest;
+
+	})();
+
+	var QuickTest = (function () {
+
+		function QuickTest() {
+			// load / save
+			assert(undefined, Quick.load());
+			var game = { level: 1, lives: 2 };
+			assert(undefined, Quick.save(game));
+			game = null;
+			game = Quick.load();
+			assert(JSON.stringify({ level: 1, lives: 2 }), JSON.stringify(game));
+		}
+
+		return QuickTest;
 
 	})();
 
