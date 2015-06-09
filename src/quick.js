@@ -78,6 +78,10 @@
 			load();
 		};
 
+		Quick.addControllerDevice = function (device) {
+			input.addController(device);
+		};
+
 		Quick.clearCanvas = function () {
 			canvas.height = canvas.height;
 		};
