@@ -1573,6 +1573,7 @@
 			this.color = null;
 			this.layerIndex = 0;
 			this.isEssential = false;
+			this.expiration = -1;
 			this.isExpired = false;
 			this.isSolid = false;
 			this.isVisible = true;
@@ -1653,6 +1654,10 @@
 			this.isVisible = isVisible == undefined || isVisible;
 		};
 
+		GameObject.prototype.setExpiration = function (expiration) {
+			this.expiration = expiration;
+		};
+
 		// override
 		GameObject.prototype.render = function (graphics) {
 			if (!this.isVisible) return;
@@ -1670,7 +1675,7 @@
 		// override
 		GameObject.prototype.sync = function () {
 			if (this.getExpired()) return true;
-			++this.tick;
+			if (++this.tick == this.expiration) this.expire();
 			return Sprite.prototype.sync.call(this);
 		};
 

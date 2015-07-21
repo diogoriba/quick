@@ -116,6 +116,12 @@
 			assert(0, gameObject.getLayerIndex());
 			assert(false, gameObject.getEssential());
 			assert(false, gameObject.getSolid());
+
+			// should expire in 5 ticks
+			assert(false, gameObject.getExpired());
+			gameObject.setExpiration(5);
+			for (var i = 0; i < 5; ++i) { gameObject.sync(); };
+			assert(true, gameObject.getExpired());
 		}
 
 		return GameObjectTest;
