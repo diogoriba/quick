@@ -117,11 +117,17 @@
 			assert(false, gameObject.getEssential());
 			assert(false, gameObject.getSolid());
 
-			// should expire in 5 ticks
-			assert(false, gameObject.getExpired());
+			// expiration
+			gameObject = new GameObject();
 			gameObject.setExpiration(5);
-			for (var i = 0; i < 5; ++i) { gameObject.sync(); };
+
+			for (var i = 0; i < 5; ++i) {
+				assert(false, gameObject.getExpired());
+				assert(false, gameObject.sync());
+			}
+
 			assert(true, gameObject.getExpired());
+			assert(true, gameObject.sync());
 		}
 
 		return GameObjectTest;
