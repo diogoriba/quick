@@ -9,9 +9,9 @@
 	var Quick = com.dgsprb.quick.Quick;
 	var Frame = com.dgsprb.quick.Frame;
 	var GameObject = com.dgsprb.quick.GameObject;
-    var ImageFactory = com.dgsprb.quick.ImageFactory;
+	var ImageFactory = com.dgsprb.quick.ImageFactory;
 	var Rect = com.dgsprb.quick.Rect;
-    var Scene = com.dgsprb.quick.Scene;
+	var Scene = com.dgsprb.quick.Scene;
 
 	// constants
 	var CLOUD_IMAGE = document.getElementById("cloudSprite");

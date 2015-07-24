@@ -5,7 +5,7 @@
 	// imports
 	var CommandEnum = com.dgsprb.quick.CommandEnum;
 	var Quick = com.dgsprb.quick.Quick;
-    var GameObject = com.dgsprb.quick.GameObject;
+	var GameObject = com.dgsprb.quick.GameObject;
 	var Scene = com.dgsprb.quick.Scene;
 
 	function main() {
