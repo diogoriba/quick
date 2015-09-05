@@ -1159,17 +1159,14 @@
 			this.maxSpeedY = maxSpeedY || 0;
 		};
 
-		Point.prototype.setPosition = function () {
-			if (arguments.length > 1) {
-				var x = arguments[0];
-				var y = arguments[1];
-				this.setX(x);
-				this.setY(y);
-			} else {
-				var point = arguments[0];
-				this.setX(point.getX());
-				this.setY(point.getY());
-			}
+		Point.prototype.setPosition = function (x, y) {
+			this.setX(x);
+			this.setY(y);
+		};
+
+		Point.prototype.setPositionFromPoint = function (point) {
+			this.setX(point.getX());
+			this.setY(point.getY());
 		};
 
 		Point.prototype.setSpeedToAngle = function (speed, degrees) {
@@ -1334,17 +1331,14 @@
 			this.setY(y - this.getHeight() + 1);
 		};
 
-		Rect.prototype.setCenter = function () {
-			if (arguments.length > 1) {
-				var x = arguments[0];
-				var y = arguments[1];
-				this.setCenterX(x);
-				this.setCenterY(y);
-			} else {
-				var point = arguments[0];
-				this.setCenterX(point.getX());
-				this.setCenterY(point.getY());
-			}
+		Rect.prototype.setCenter = function (x, y) {
+			this.setCenterX(x);
+			this.setCenterY(y);
+		};
+
+		Rect.prototype.setCenterFromPoint = function (point) {
+			this.setCenterX(point.getX());
+			this.setCenterY(point.getY());
 		};
 
 		Rect.prototype.setCenterX = function (x) {
