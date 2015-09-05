@@ -364,13 +364,11 @@
 			function onMouseDown(event) {
 				event.preventDefault();
 				that.buffer = true;
-				// that.updateCoordinates(event);
 			}
 
 			function onMouseUp(event) {
 				event.preventDefault();
 				that.buffer = false;
-				// that.updateCoordinates(event);
 			}
 
 			function onMouseMove(event) {
@@ -392,8 +390,7 @@
 		};
 
 		Mouse.prototype.updateCoordinates = function (event) {
-			this.position.setX(event.x);
-			this.position.setY(event.y);
+			this.position.setPosition(event.x, event.y);
 		};
 
 		return Mouse;
@@ -419,7 +416,7 @@
 
 			function onTouchEnd(event) {
 				event.preventDefault();
-				this.buffer = false;
+				that.buffer = false;
 				that.updateCoordinates(event);
 			}
 
@@ -444,8 +441,7 @@
 		Touch.prototype.updateCoordinates = function (event) {
 			var touches = event.changedTouches;
 			var touch = touches[0];
-			this.x = touch.pageX;
-			this.y = touch.pageY;
+			this.position.setPosition(touch.pageX, touch.pageY);
 		};
 
 		return Touch;
@@ -481,8 +477,7 @@
 			if (this.active && last) this.hold = true;
 			var x = Math.floor((this.device.getX() - Quick.getCanvasOffsetLeft()) * Quick.getCanvasWidth() / Quick.getRealWidth());
 			var y = Math.floor((this.device.getY() - Quick.getCanvasOffsetTop()) * Quick.getCanvasHeight() / Quick.getRealHeight());
-			this.position.setX(x);
-			this.position.setY(y);
+			this.position.setPosition(x, y);
 		};
 
 		Pointer.prototype.getPosition = function () {
@@ -759,6 +754,9 @@
 			"K" : 75,
 			"L" : 76,
 			"S" : 83,
+			"F5" : 116,
+			"F11" : 122,
+			"F12" : 123,
 			"ESC" : 127
 		};
 
@@ -782,6 +780,11 @@
 			KeyToCommandMap[KeyEnum.ENTER] = CommandEnum.START;
 			KeyToCommandMap[KeyEnum.ESC] = CommandEnum.SELECT;
 
+		var PassThrough = [];
+			PassThrough[KeyEnum.F5] = true;
+			PassThrough[KeyEnum.F11] = true;
+			PassThrough[KeyEnum.F12] = true;
+
 		function Keyboard(event) {
 			var that = this;
 			this.buffer = {};
@@ -790,7 +793,7 @@
 			onKeyDown(event);
 
 			function onKeyDown(event) {
-				event.preventDefault();
+				PassThrough[event.keyCode] || event.preventDefault();
 				onKey(event.keyCode, true);
 			}
 
