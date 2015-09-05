@@ -178,7 +178,7 @@
 			assert(10, point.getX());
 			assert(11, point.getY());
 
-			point.setPosition(new Point(12, 13));
+			point.setPosition(12, 13);
 			assert(12, point.getX());
 			assert(13, point.getY());
 
