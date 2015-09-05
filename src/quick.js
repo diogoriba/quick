@@ -1164,6 +1164,11 @@
 			this.setY(y);
 		};
 
+		Point.prototype.setPositionFromPoint = function (point) {
+			this.setX(point.getX());
+			this.setY(point.getY());
+		};
+
 		Point.prototype.setSpeedToAngle = function (speed, degrees) {
 			var radians = toRadians(degrees);
 			this.setSpeedX(speed * Math.cos(radians));
@@ -1326,7 +1331,12 @@
 			this.setY(y - this.getHeight() + 1);
 		};
 
-		Rect.prototype.setCenter = function (point) {
+		Rect.prototype.setCenter = function (x, y) {
+			this.setCenterX(x);
+			this.setCenterY(y);
+		};
+
+		Rect.prototype.setCenterFromPoint = function (point) {
 			this.setCenterX(point.getX());
 			this.setCenterY(point.getY());
 		};

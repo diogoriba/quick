@@ -174,6 +174,14 @@
 			point.setAccelerationY(5);
 			assert(5, point.getAccelerationY());
 
+			point.setPosition(12, 13);
+			assert(12, point.getX());
+			assert(13, point.getY());
+
+			point.setPositionFromPoint(new Point(10, 11));
+			assert(10, point.getX());
+			assert(11, point.getY());
+
 			point.setSpeedX(6);
 			assert(6, point.getSpeedX());
 
@@ -330,7 +338,12 @@
 			rect.setBottom(11);
 			assert(11, rect.getBottom());
 
-			rect.setCenter(new Point(12, 13));
+			rect.setCenter(23, 24);
+			var point = rect.getCenter();
+			assert(23, point.getX());
+			assert(24, point.getY());
+
+			rect.setCenterFromPoint(new Point(12, 13));
 			var point = rect.getCenter();
 			assert(12, point.getX());
 			assert(13, point.getY());
