@@ -584,8 +584,10 @@
 				result[CommandEnum.RIGHT] = true;
 			}
 
+			var buttons = Input.getGamepadButtons(this.id);
+
 			for (var i in ButtonToCommandMap) {
-				if (Input.getGamepadButtons(this.id, i)) result[ButtonToCommandMap[i]] = true;
+				if (buttons[i] && buttons[i].pressed) result[ButtonToCommandMap[i]] = true;
 			}
 
 			return result;
@@ -615,9 +617,9 @@
 			return [];
 		};
 
-		Input.getGamepadButtons = function (id, buttonEnum) {
-			if (getGamepads()[id]) return getGamepads()[id].buttons[buttonEnum].pressed;
-			return false;
+		Input.getGamepadButtons = function (id) {
+			var gamepad = getGamepads()[id];
+			return gamepad && gamepad.buttons || [];
 		};
 
 		Input.prototype.addController = function (device) {
