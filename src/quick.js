@@ -759,7 +759,7 @@
 			"F5" : 116,
 			"F11" : 122,
 			"F12" : 123,
-			"ESC" : 127
+			"ESC" : 27
 		};
 
 		var KeyToCommandMap = {};
