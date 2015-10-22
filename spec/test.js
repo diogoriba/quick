@@ -5,6 +5,7 @@
 	// node.js support
 	if (typeof(window) == "undefined") {
 		global.window = global;
+		global.addEventListener = function() {};
 		global.localStorage = {};
 		require("../src/quick.js");
 
@@ -21,6 +22,7 @@
 	var CommandEnum = com.dgsprb.quick.CommandEnum;
 	var Controller = com.dgsprb.quick.Controller;
 	var GameObject = com.dgsprb.quick.GameObject;
+	var Mouse = com.dgsprb.quick.Mouse;
 	var Point = com.dgsprb.quick.Point;
 	var Quick = com.dgsprb.quick.Quick;
 	var Rect = com.dgsprb.quick.Rect;
@@ -40,6 +42,7 @@
 
 		new ControllerTest();
 		new GameObjectTest();
+		new MouseTest();
 		new PointTest();
 		new QuickTest();
 		new RectTest();
@@ -131,6 +134,32 @@
 		}
 
 		return GameObjectTest;
+
+	})();
+
+	var MouseTest = (function () {
+
+		function MouseTest() {
+			var mouse;
+
+			// no args constructor
+			mouse = new Mouse();
+			assert(0, mouse.getX());
+			assert(0, mouse.getY());
+			assert(false, mouse.getCommand());
+
+			// updateCoordinates
+			mouse.updateCoordinates({ x: 1, y: 2 });
+			assert(1, mouse.getX());
+			assert(2, mouse.getY());
+
+			// updateCoordinates on Firefox
+			mouse.updateCoordinates({ clientX: 3, clientY: 4 });
+			assert(3, mouse.getX());
+			assert(4, mouse.getY());
+		}
+
+		return MouseTest;
 
 	})();
 

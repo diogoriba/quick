@@ -359,7 +359,7 @@
 			addEventListener("mousedown", onMouseDown, false);
 			addEventListener("mouseup", onMouseUp, false);
 			addEventListener("mousemove", onMouseMove, false);
-			onMouseDown(event);
+			event && onMouseDown(event);
 
 			function onMouseDown(event) {
 				event.preventDefault();
@@ -390,7 +390,9 @@
 		};
 
 		Mouse.prototype.updateCoordinates = function (event) {
-			this.position.setPosition(event.x, event.y);
+			var x = event.x || event.clientX;
+			var y = event.y || event.clientY;
+			this.position.setPosition(x, y);
 		};
 
 		return Mouse;
@@ -1816,6 +1818,7 @@
 		"Frame" : Frame,
 		"GameObject" : GameObject,
 		"ImageFactory" : ImageFactory,
+		"Mouse" : Mouse,
 		"Point" : Point,
 		"Quick" : Quick,
 		"Rect" : Rect,
