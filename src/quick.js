@@ -250,7 +250,9 @@
 			input.update();
 
 			if (transition != null) {
-				if (transition.sync()) transition = null;
+				if (transition.sync()) {
+					transition = null;
+				}
 			} else {
 				if (isTransitioning) {
 					isTransitioning = false;
@@ -282,7 +284,9 @@
 		}
 
 		function polyfill() {
-			if (!window.requestAnimationFrame) window.requestAnimationFrame = requestAnimationFrameFacade;
+			if (!window.requestAnimationFrame) {
+				window.requestAnimationFrame = requestAnimationFrameFacade;
+			}
 
 			function requestAnimationFrameFacade(functionReference) {
 				functionReference();
@@ -294,7 +298,11 @@
 
 			if (keepAspect) {
 				var proportion = window.innerWidth / canvas.width;
-				if (window.innerHeight < canvas.height * proportion) proportion = window.innerHeight / canvas.height;
+
+				if (window.innerHeight < canvas.height * proportion) {
+					proportion = window.innerHeight / canvas.height;
+				}
+
 				width = canvas.width * proportion;
 				height = canvas.height * proportion
 			} else {
@@ -325,7 +333,10 @@
 		};
 
 		ImageFactory.rotate = function (image, degrees) {
-			if (degrees % 360 == 0 ) return image;
+			if (degrees % 360 == 0 ) {
+				return image;
+			}
+
 			var radians = toRadians(degrees);
 			var canvas = document.createElement(CANVAS_TAG);
 			var sideA = image.width;
@@ -484,11 +495,18 @@
 		};
 
 		Pointer.prototype.update = function () {
-			if (!this.device) return;
+			if (!this.device) {
+				return;
+			}
+
 			this.hold = false;
 			var last = this.active;
 			this.active = this.device.getCommand();
-			if (this.active && last) this.hold = true;
+
+			if (this.active && last) {
+				this.hold = true;
+			}
+
 			var x = Math.floor((this.device.getX() - Quick.getCanvasOffsetLeft()) * Quick.getCanvasWidth() / Quick.getRealWidth());
 			var y = Math.floor((this.device.getY() - Quick.getCanvasOffsetTop()) * Quick.getCanvasHeight() / Quick.getRealHeight());
 			this.position.setPosition(x, y);
@@ -523,13 +541,20 @@
 		};
 
 		Controller.prototype.update = function () {
-			if (!this.device) return;
+			if (!this.device) {
+				return;
+			}
+
 			this.hold = {};
 			var last = this.active;
 			this.active = this.device.getCommands();
 
-			for (var i in this.active) if (this.active.hasOwnProperty(i)) {
-				if (last[i]) this.hold[i] = true;
+			for (var i in this.active) {
+				if (this.active.hasOwnProperty(i)) {
+					if (last[i]) {
+						this.hold[i] = true;
+					}
+				}
 			}
 		};
 
@@ -601,8 +626,12 @@
 
 			var buttons = Input.getGamePadButtons(this.id);
 
-			for (var i in ButtonToCommandMap) if (ButtonToCommandMap.hasOwnProperty(i)) {
-				if (buttons[i] && buttons[i][PRESSED]) result[ButtonToCommandMap[i]] = true;
+			for (var i in ButtonToCommandMap) {
+				if (ButtonToCommandMap.hasOwnProperty(i)) {
+					if (buttons[i] && buttons[i][PRESSED]) {
+						result[ButtonToCommandMap[i]] = true;
+					}
+				}
 			}
 
 			return result;
@@ -630,7 +659,10 @@
 		}
 
 		Input.getGamePadAxes = function (id) {
-			if (getGamePads()[id]) return getGamePads()[id][AXES];
+			if (getGamePads()[id]) {
+				return getGamePads()[id][AXES];
+			}
+
 			return [];
 		};
 
@@ -650,7 +682,9 @@
 		};
 
 		Input.prototype.checkGamePads = function () {
-			if (getGamePads()[this.gamePads]) this.addController(new GamePad(this.gamePads++));
+			if (getGamePads()[this.gamePads]) {
+				this.addController(new GamePad(this.gamePads++));
+			}
 		};
 
 		Input.prototype.checkControllerQueues = function () {
@@ -698,14 +732,18 @@
 		Input.prototype.update = function () {
 			this.checkGamePads();
 
-			for (var i in this.controllers) if (this.controllers.hasOwnProperty(i)) {
-				var controller = this.controllers[i];
-				controller.update();
+			for (var i in this.controllers) {
+				if (this.controllers.hasOwnProperty(i)) {
+					var controller = this.controllers[i];
+					controller.update();
+				}
 			}
 
-			for (var j in this.pointers) if (this.pointers.hasOwnProperty(j)) {
-				var pointer = this.pointers[j];
-				pointer.update();
+			for (var j in this.pointers) {
+				if (this.pointers.hasOwnProperty(j)) {
+					var pointer = this.pointers[j];
+					pointer.update();
+				}
 			}
 		};
 
@@ -740,7 +778,10 @@
 		};
 
 		function getGamePads() {
-			if (navigator.getGamepads) return navigator.getGamepads();
+			if (navigator.getGamepads) {
+				return navigator.getGamepads();
+			}
+
 			return [];
 		}
 
@@ -823,8 +864,12 @@
 		Keyboard.prototype.getCommands = function () {
 			var result = {};
 
-			for (var i in this.buffer) if (this.buffer.hasOwnProperty(i)) {
-				if (this.buffer[i]) result[i] = true;
+			for (var i in this.buffer) {
+				if (this.buffer.hasOwnProperty(i)) {
+					if (this.buffer[i]) {
+						result[i] = true;
+					}
+				}
 			}
 
 			return result;
@@ -903,7 +948,10 @@
 		};
 
 		Scene.prototype.sync = function () {
-			if (this.isExpired) return true;
+			if (this.isExpired) {
+				return true;
+			}
+
 			var gameObjects = [];
 			var solidGameObjects = [];
 
@@ -912,9 +960,14 @@
 				gameObject.update();
 
 				if (gameObject.sync()) {
-					if (gameObject.getEssential()) this.expire();
+					if (gameObject.getEssential()) {
+						this.expire();
+					}
 				} else {
-					if (gameObject.getSolid()) solidGameObjects.push(gameObject);
+					if (gameObject.getSolid()) {
+						solidGameObjects.push(gameObject);
+					}
+
 					gameObjects.push(gameObject);
 					Quick.paint(gameObject, gameObject.getLayerIndex());
 				}
@@ -923,12 +976,18 @@
 			checkCollisions(solidGameObjects);
 			this.gameObjects = gameObjects.concat(this.nextObjects);
 			this.nextObjects = [];
-			if (++this.tick == this.expiration) this.expire();
+
+			if (++this.tick == this.expiration) {
+				this.expire();
+			}
+
 			return false;
 		};
 
 		Scene.prototype.getNext = function () {
-			if (this.delegate && this.delegate.getNext) return this.delegate.getNext();
+			if (this.delegate && this.delegate.getNext) {
+				return this.delegate.getNext();
+			}
 		};
 
 		Scene.prototype.getObjectsWithTag = function (tag) {
@@ -936,7 +995,10 @@
 
 			for (var i = 0; i < this.gameObjects.length; ++i) {
 				var gameObject = this.gameObjects[i];
-				if (gameObject.hasTag(tag)) result.push(gameObject);
+
+				if (gameObject.hasTag(tag)) {
+					result.push(gameObject);
+				}
 			}
 
 			return result;
@@ -1002,7 +1064,10 @@
 		}
 
 		Sound.prototype.fadeOut = function () {
-			if (!this.theme) return;
+			if (!this.theme) {
+				return;
+			}
+
 			this.isFading = true;
 			this.volume = 100;
 		};
@@ -1018,32 +1083,53 @@
 		};
 
 		Sound.prototype.pause = function () {
-			if (this.theme) this.theme.pause();
+			if (this.theme) {
+				this.theme.pause();
+			}
 		};
 
 		Sound.prototype.play = function (id) {
-			if (this.isMute) return;
+			if (this.isMute) {
+				return;
+			}
+
 			this.queue[id] = true;
 		};
 
 		Sound.prototype.playTheme = function (id) {
 			if (this.theme && this.theme.currentTime > 0) {
 				this.nextThemeName = id;
-				if (!this.isFading) this.fadeOut();
+
+				if (!this.isFading) {
+					this.fadeOut();
+				}
+
 				return;
 			}
 
 			this.stopTheme();
 			this.theme = document.getElementById(id);
-			if (this.theme.currentTime > 0) this.theme.currentTime = 0;
-			if (this.isMute) return;
+
+			if (this.theme.currentTime > 0) {
+				this.theme.currentTime = 0;
+			}
+
+			if (this.isMute) {
+				return;
+			}
+
 			this.theme.volume = 1;
 			this.theme.play();
 		};
 
 		Sound.prototype.resume = function () {
-			if (this.isMute) return;
-			if (this.theme.paused) this.theme.play();
+			if (this.isMute) {
+				return;
+			}
+
+			if (this.theme.paused) {
+				this.theme.play();
+			}
 		};
 
 		Sound.prototype.stopTheme = function () {
@@ -1054,12 +1140,18 @@
 		};
 
 		Sound.prototype.update = function () {
-			for (var i in this.queue) if (this.queue.hasOwnProperty(i)) {
-				var sound = document.getElementById(i);
-				sound.pause();
-				if (sound.currentTime > 0) sound.currentTime = 0;
-				sound.volume = DEFAULT_SOUND_EFFECTS_VOLUME;
-				sound.play();
+			for (var i in this.queue) {
+				if (this.queue.hasOwnProperty(i)) {
+					var sound = document.getElementById(i);
+					sound.pause();
+
+					if (sound.currentTime > 0) {
+						sound.currentTime = 0;
+					}
+
+					sound.volume = DEFAULT_SOUND_EFFECTS_VOLUME;
+					sound.play();
+				}
 			}
 
 			this.queue = {};
@@ -1094,6 +1186,8 @@
 			this.setSpeedY();
 			this.setX(x);
 			this.setY(y);
+			this.lastX = this.x;
+			this.lastY = this.y;
 		}
 
 		Point.prototype.bounceX = function () {
@@ -1128,6 +1222,18 @@
 
 		Point.prototype.getCenterY = function () {
 			return this.y;
+		};
+
+		Point.prototype.getLastPosition = function () {
+			return new Point(this.getLastX(), this.getLastY());
+		};
+
+		Point.prototype.getLastX = function () {
+			return this.lastX;
+		};
+
+		Point.prototype.getLastY = function () {
+			return this.lastY;
 		};
 
 		Point.prototype.getSpeedX = function () {
@@ -1220,9 +1326,19 @@
 
 		Point.prototype.sync = function () {
 			this.setSpeedX(this.getSpeedX() + this.accelerationX);
-			if (this.maxSpeedX && this.getSpeedX() > this.maxSpeedX) this.setSpeedX(this.maxSpeedX);
+
+			if (this.maxSpeedX && this.getSpeedX() > this.maxSpeedX) {
+				this.setSpeedX(this.maxSpeedX);
+			}
+
 			this.setSpeedY(this.getSpeedY() + this.accelerationY);
-			if (this.maxSpeedY && this.getSpeedY() > this.maxSpeedY) this.setSpeedY(this.maxSpeedY);
+
+			if (this.maxSpeedY && this.getSpeedY() > this.maxSpeedY) {
+				this.setSpeedY(this.maxSpeedY);
+			}
+
+			this.lastX = this.getX();
+			this.lastY = this.getY();
 			this.move(this.getSpeedX(), this.getSpeedY());
 			return false;
 		};
@@ -1242,8 +1358,13 @@
 		Rect.prototype = Object.create(Point.prototype);
 
 		Rect.prototype.bounceFrom = function (collision) {
-			if ((this.getSpeedX() < 0 && collision.getLeft()) || (this.getSpeedX() > 0 && collision.getRight())) this.bounceX();
-			if ((this.getSpeedY() < 0 && collision.getTop()) || (this.getSpeedY() > 0 && collision.getBottom())) this.bounceY();
+			if ((this.getSpeedX() < 0 && collision.getLeft()) || (this.getSpeedX() > 0 && collision.getRight())) {
+				this.bounceX();
+			}
+
+			if ((this.getSpeedY() < 0 && collision.getTop()) || (this.getSpeedY() > 0 && collision.getBottom())) {
+				this.bounceY();
+			}
 		};
 
 		Rect.prototype.getBottom = function () {
@@ -1562,7 +1683,10 @@
 		};
 
 		Sprite.prototype.setAnimation = function (animation) {
-			if (this.animation == animation) return;
+			if (this.animation == animation) {
+				return;
+			}
+
 			this.animation = animation;
 			this.animation.setFrameIndex(0);
 			this.setHeight(this.animation.getHeight());
@@ -1587,8 +1711,15 @@
 
 		Sprite.prototype.sync = function () {
 			var result = Rect.prototype.sync.call(this);
-			if (this.animation && this.animation.update()) this.onAnimationLoop();
-			if (this.boundary && !this.hasCollision(this.boundary)) this.offBoundary();
+
+			if (this.animation && this.animation.update()) {
+				this.onAnimationLoop();
+			}
+
+			if (this.boundary && !this.hasCollision(this.boundary)) {
+				this.offBoundary();
+			}
+
 			return result;
 		};
 
@@ -1691,7 +1822,9 @@
 		};
 
 		GameObject.prototype.render = function (context) {
-			if (!this.isVisible) return;
+			if (!this.isVisible) {
+				return;
+			}
 
 			if (this.color) {
 				var x = Math.floor(this.getX());
@@ -1704,8 +1837,14 @@
 		};
 
 		GameObject.prototype.sync = function () {
-			if (this.getExpired()) return true;
-			if (++this.tick == this.expiration) this.expire();
+			if (this.getExpired()) {
+				return true;
+			}
+
+			if (++this.tick == this.expiration) {
+				this.expire();
+			}
+
 			return Sprite.prototype.sync.call(this);
 		};
 
@@ -1752,10 +1891,20 @@
 					y += height + SPACING;
 				} else {
 					var image = document.getElementById(character + FONT_SUFFIX);
-					if (context) context.drawImage(image, this.getX() + x, this.getY() + y, image.width, image.height);
+
+					if (context) {
+						context.drawImage(image, this.getX() + x, this.getY() + y, image.width, image.height);
+					}
+
 					x += image.width + SPACING;
-					if (x > width) width = x;
-					if (image.height > height) height = image.height;
+
+					if (x > width) {
+						width = x;
+					}
+
+					if (image.height > height) {
+						height = image.height;
+					}
 				}
 			}
 
@@ -1804,7 +1953,10 @@
 		BaseTransition.prototype = Object.create(GameObject.prototype);
 
 		BaseTransition.prototype.sync = function () {
-			if (this.getWidth() > Quick.getCanvasWidth()) return true;
+			if (this.getWidth() > Quick.getCanvasWidth()) {
+				return true;
+			}
+
 			this.increaseWidth(this.increase);
 			Quick.paint(this);
 			return GameObject.prototype.sync.call(this);
@@ -1822,25 +1974,34 @@
 		return degrees * Math.PI / RADIAN_DEGREES;
 	}
 
-	if (!window.com) window.com = {};
-	if (!window.com.dgsprb) window.com.dgsprb = {};
+	function publish() {
+		if (!window.com) {
+			window.com = {};
+		}
 
-	window.com.dgsprb.quick = {
-		"Animation" : Animation,
-		"BaseTile" : BaseTile,
-		"BaseTransition" : BaseTransition,
-		"CommandEnum" : CommandEnum,
-		"Controller" : Controller,
-		"Frame" : Frame,
-		"GameObject" : GameObject,
-		"ImageFactory" : ImageFactory,
-		"Mouse" : Mouse,
-		"Point" : Point,
-		"Quick" : Quick,
-		"Rect" : Rect,
-		"Scene" : Scene,
-		"Sprite" : Sprite,
-		"Text" : Text
-	};
+		if (!window.com.dgsprb) {
+			window.com.dgsprb = {};
+		}
+
+		window.com.dgsprb.quick = {
+			"Animation" : Animation,
+			"BaseTile" : BaseTile,
+			"BaseTransition" : BaseTransition,
+			"CommandEnum" : CommandEnum,
+			"Controller" : Controller,
+			"Frame" : Frame,
+			"GameObject" : GameObject,
+			"ImageFactory" : ImageFactory,
+			"Mouse" : Mouse,
+			"Point" : Point,
+			"Quick" : Quick,
+			"Rect" : Rect,
+			"Scene" : Scene,
+			"Sprite" : Sprite,
+			"Text" : Text
+		};
+	}
+
+	publish();
 
 })();

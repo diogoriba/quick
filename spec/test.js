@@ -10,7 +10,7 @@
 		require("../src/quick.js");
 
 		global.document = {
-			getElementById: function (id) {
+			getElementById: function () {
 				return {
 					width: 10
 				}
@@ -295,6 +295,33 @@
 			point.sync();
 			assert(2, point.getSpeedX());
 			assert(4, point.getSpeedY());
+
+			// last position
+			point = new Point();
+			assert(0, point.getX());
+			assert(0, point.getY());
+			assert(0, point.getLastX());
+			assert(0, point.getLastY());
+			var lastPosition = point.getLastPosition();
+			assert(0, lastPosition.getX());
+			assert(0, lastPosition.getY());
+			point.sync();
+			point.setPosition(20, 30);
+			assert(20, point.getX());
+			assert(30, point.getY());
+			assert(0, point.getLastX());
+			assert(0, point.getLastY());
+			lastPosition = point.getLastPosition();
+			assert(0, lastPosition.getX());
+			assert(0, lastPosition.getY());
+			point.sync();
+			assert(20, point.getX());
+			assert(30, point.getY());
+			assert(20, point.getLastX());
+			assert(30, point.getLastY());
+			lastPosition = point.getLastPosition();
+			assert(20, lastPosition.getX());
+			assert(30, lastPosition.getY());
 		}
 
 		return PointTest;
