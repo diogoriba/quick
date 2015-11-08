@@ -3,7 +3,7 @@
 	"use strict";
 
 	// node.js support
-	if (typeof(window) == "undefined") {
+	if (typeof(window) == "undefined" && global) {
 		global.window = global;
 		global.addEventListener = function() {};
 		global.localStorage = {};
@@ -76,8 +76,8 @@
 			// no args constructor
 			controller = new Controller();
 
-			for (var key in CommandEnum) {
-				var value = CommandEnum[key];
+			for (var i in CommandEnum) if (CommandEnum.hasOwnProperty(i)) {
+				var value = CommandEnum[i];
 				assert(undefined, controller.keyDown(value));
 				assert(undefined, controller.keyPush(value));
 			}
@@ -86,17 +86,17 @@
 			controller.setDevice(new DeviceMock());
 			assert(undefined, controller.update());
 
-			for (var key in CommandEnum) {
-				assert(true, controller.keyDown(CommandEnum[key]));
-				assert(true, controller.keyPush(CommandEnum[key]));
+			for (var j in CommandEnum) if (CommandEnum.hasOwnProperty(j)) {
+				assert(true, controller.keyDown(CommandEnum[j]));
+				assert(true, controller.keyPush(CommandEnum[j]));
 			}
 
 			// with all commands, second update
 			assert(undefined, controller.update());
 
-			for (var key in CommandEnum) {
-				assert(true, controller.keyDown(CommandEnum[key]));
-				assert(false, controller.keyPush(CommandEnum[key]));
+			for (var k in CommandEnum) if (CommandEnum.hasOwnProperty(k)) {
+				assert(true, controller.keyDown(CommandEnum[k]));
+				assert(false, controller.keyPush(CommandEnum[k]));
 			}
 		}
 
@@ -308,7 +308,6 @@
 			assert(undefined, Quick.load());
 			var game = { level: 1, lives: 2 };
 			assert(undefined, Quick.save(game));
-			game = null;
 			game = Quick.load();
 			assert(JSON.stringify({ level: 1, lives: 2 }), JSON.stringify(game));
 		}
@@ -373,7 +372,7 @@
 			assert(24, point.getY());
 
 			rect.setCenterFromPoint(new Point(12, 13));
-			var point = rect.getCenter();
+			point = rect.getCenter();
 			assert(12, point.getX());
 			assert(13, point.getY());
 
@@ -460,7 +459,6 @@
 
 		function SpriteTest() {
 			var sprite;
-			var delegate;
 			var offBoundaryCalled;
 
 			// no args constructor
@@ -509,7 +507,7 @@
 			var text;
 
 			// no args constructor
-			text = new Text();
+			new Text();
 
 			// all args constructor
 			text = new Text("whatever");
@@ -532,7 +530,7 @@
 		DeviceMock.prototype.getCommands = function () {
 			var result = {};
 
-			for (var key in CommandEnum) {
+			for (var key in CommandEnum) if (CommandEnum.hasOwnProperty(key)) {
 				result[CommandEnum[key]] = true;
 			}
 
