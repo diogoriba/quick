@@ -10,6 +10,18 @@
 
 	"use strict";
 
+	var CANVAS_TAG = "canvas";
+	var CONTEXT = "2d";
+	var KEY_DOWN = "keydown";
+	var KEY_UP = "keyup";
+	var MOUSE_DOWN = "mousedown";
+	var MOUSE_MOVE = "mousemove";
+	var MOUSE_UP = "mouseup";
+	var RADIAN_DEGREES = 180;
+	var TOUCH_END = "touchend";
+	var TOUCH_MOVE = "touchmove";
+	var TOUCH_START = "touchstart";
+
 	var CommandEnum = {
 		"UP" : 0,
 		"DOWN" : 1,
@@ -30,9 +42,11 @@
 		var DEFAULT_KEEP_ASPECT = false;
 		var DEFAULT_NAME = "Game";
 		var DEFAULT_NUMBER_OF_LAYERS = 1;
+		var IMG_TAG = "img";
 		var LOADING_TIMEOUT = 100;
+		var PX = "px";
+		var RESIZE_EVENT = "resize";
 
-		var FirstSceneClass;
 		var autoScale = DEFAULT_AUTO_SCALE;
 		var canvas;
 		var everyOther = true;
@@ -57,17 +71,17 @@
 
 		Quick.init = function (firstSceneFactory, canvasElement) {
 			sceneFactory = firstSceneFactory;
-			canvas = canvasElement || document.getElementsByTagName("canvas")[0];
+			canvas = canvasElement || document.getElementsByTagName(CANVAS_TAG)[0];
 			width = canvas.width;
 			height = canvas.height;
 			realWidth = width;
 			realHeight = height;
-			images = document.getElementsByTagName("img");
+			images = document.getElementsByTagName(IMG_TAG);
 			input = new Input();
 			isRunning = true;
 			sound = new Sound();
-			addEventListener("resize", scale, false);
-			scale();
+			addEventListener(RESIZE_EVENT, scale, false);
+			autoScale && scale();
 			polyfill();
 			this.setFrameTime();
 
@@ -83,7 +97,8 @@
 		};
 
 		Quick.clearCanvas = function () {
-			canvas.height = canvas.height;
+			var context = canvas.getContext(CONTEXT);
+			context.clearRect(0, 0, width, height);
 		};
 
 		Quick.fadeOut = function () {
@@ -163,8 +178,7 @@
 		};
 
 		Quick.paint = function (renderable, index) {
-			var index = index || 0;
-			var layer = renderableLists[index];
+			var layer = renderableLists[index || 0];
 			layer.add(renderable);
 		};
 
@@ -179,8 +193,7 @@
 		Quick.random = function (ceil) {
 			var random = Math.random();
 			var raw = random * (ceil + 1);
-			var result = Math.floor(raw);
-			return result;
+			return Math.floor(raw);
 		};
 
 		Quick.save = function (data) {
@@ -212,13 +225,12 @@
 			sound.stopTheme();
 		};
 
-		// private
 		function load() {
 			for (var i = 0; i < images.length; ++i) {
 				var image = images[i];
 
 				if (!image.complete) {
-					var timeout = setTimeout(onTimeout, LOADING_TIMEOUT);
+					setTimeout(onTimeout, LOADING_TIMEOUT);
 					return;
 				}
 			}
@@ -232,9 +244,8 @@
 		}
 
 		function loop() {
-			if (!isRunning) return;
 			var startTime = Date.now();
-			var graphics = canvas.getContext("2d");
+			var context = canvas.getContext(CONTEXT);
 			everyOther = !everyOther;
 			input.update();
 
@@ -258,15 +269,15 @@
 
 			for (var i = 0; i < renderableLists.length; ++i) {
 				var layer = renderableLists[i];
-				layer.render(graphics);
+				layer.render(context);
 			}
 
 			var elapsedTime = Date.now() - startTime;
 			var interval = frameTime - elapsedTime;
-			var timeout = setTimeout(onTimeout, interval);
+			setTimeout(onTimeout, interval);
 
 			function onTimeout() {
-				var frame = requestAnimationFrame(loop);
+				isRunning && requestAnimationFrame(loop);
 			}
 		}
 
@@ -279,7 +290,6 @@
 		}
 
 		function scale() {
-			if (!autoScale) return;
 			var width, height;
 
 			if (keepAspect) {
@@ -294,8 +304,8 @@
 
 			realWidth = width;
 			realHeight = height;
-			canvas.style.width = width + "px";
-			canvas.style.height = height + "px";
+			canvas.style.width = width + PX;
+			canvas.style.height = height + PX;
 		}
 
 		return Quick;
@@ -317,29 +327,29 @@
 		ImageFactory.rotate = function (image, degrees) {
 			if (degrees % 360 == 0 ) return image;
 			var radians = toRadians(degrees);
-			var canvas = document.createElement("canvas");
+			var canvas = document.createElement(CANVAS_TAG);
+			var sideA = image.width;
+			var sideB = image.height;
 
 			if (degrees == 90 || degrees == 270) {
-				canvas.width = image.height;
-				canvas.height = image.width;
-			} else {
-				canvas.width = image.width;
-				canvas.height = image.height;
+				sideA = image.height;
+				sideB = image.width;
 			}
 
-			var context = canvas.getContext("2d");
+			canvas.width = sideA;
+			canvas.height = sideB;
+			var context = canvas.getContext(CONTEXT);
 			context.translate(canvas.width / 2, canvas.height / 2);
 			context.rotate(radians);
 			context.drawImage(image, -image.width / 2, -image.height / 2);
 			return canvas;
-		}
+		};
 
-		// private
 		function invert(image, isMirror, isFlip) {
-			var canvas = document.createElement("canvas");
+			var canvas = document.createElement(CANVAS_TAG);
 			canvas.width = image.width;
 			canvas.height = image.height;
-			var context = canvas.getContext("2d");
+			var context = canvas.getContext(CONTEXT);
 			context.translate(isMirror ? canvas.width : 0, isFlip ? canvas.height : 0);
 			context.scale(isMirror ? -1 : 1, isFlip ? - 1 : 1);
 			context.drawImage(image, 0, 0);
@@ -356,9 +366,9 @@
 			var that = this;
 			this.buffer = false;
 			this.position = new Point();
-			addEventListener("mousedown", onMouseDown, false);
-			addEventListener("mouseup", onMouseUp, false);
-			addEventListener("mousemove", onMouseMove, false);
+			addEventListener(MOUSE_DOWN, onMouseDown, false);
+			addEventListener(MOUSE_MOVE, onMouseMove, false);
+			addEventListener(MOUSE_UP, onMouseUp, false);
 			event && onMouseDown(event);
 
 			function onMouseDown(event) {
@@ -401,20 +411,16 @@
 
 	var Touch = (function () {
 
+		var CHANGED_TOUCHES = "changedTouches";
+
 		function Touch(event) {
 			var that = this;
 			this.buffer = false;
 			this.position = new Point();
-			addEventListener("touchstart", onTouchStart, false);
-			addEventListener("touchend", onTouchEnd, false);
-			addEventListener("touchmove", onTouchMove, false);
+			addEventListener(TOUCH_END, onTouchEnd, false);
+			addEventListener(TOUCH_MOVE, onTouchMove, false);
+			addEventListener(TOUCH_START, onTouchStart, false);
 			onTouchStart(event);
-
-			function onTouchStart(event) {
-				event.preventDefault();
-				that.buffer = true;
-				that.updateCoordinates(event);
-			}
 
 			function onTouchEnd(event) {
 				event.preventDefault();
@@ -424,6 +430,12 @@
 
 			function onTouchMove(event) {
 				event.preventDefault();
+				that.updateCoordinates(event);
+			}
+
+			function onTouchStart(event) {
+				event.preventDefault();
+				that.buffer = true;
 				that.updateCoordinates(event);
 			}
 		}
@@ -441,7 +453,7 @@
 		};
 
 		Touch.prototype.updateCoordinates = function (event) {
-			var touches = event.changedTouches;
+			var touches = event[CHANGED_TOUCHES];
 			var touch = touches[0];
 			this.position.setPosition(touch.pageX, touch.pageY);
 		};
@@ -516,7 +528,7 @@
 			var last = this.active;
 			this.active = this.device.getCommands();
 
-			for (var i in this.active) {
+			for (var i in this.active) if (this.active.hasOwnProperty(i)) {
 				if (last[i]) this.hold[i] = true;
 			}
 		};
@@ -525,9 +537,10 @@
 
 	})();
 
-	var Gamepad = (function () {
+	var GamePad = (function () {
 
-		var ANALOG_TRESHOLD = 0.5;
+		var ANALOG_THRESHOLD = 0.5;
+		var PRESSED = "pressed";
 
 		var AxisEnum = {
 			"LEFT_X" : 0,
@@ -567,39 +580,41 @@
 			ButtonToCommandMap[ButtonEnum.START] = CommandEnum.START;
 			ButtonToCommandMap[ButtonEnum.SELECT] = CommandEnum.SELECT;
 
-		function Gamepad(id) {
+		function GamePad(id) {
 			this.id = id || 0;
 		}
 
-		Gamepad.prototype.getCommands = function () {
+		GamePad.prototype.getCommands = function () {
 			var result = {};
 
-			if (Input.getGamepadAxes(this.id)[AxisEnum.LEFT_Y] < - ANALOG_TRESHOLD) {
+			if (Input.getGamePadAxes(this.id)[AxisEnum.LEFT_Y] < - ANALOG_THRESHOLD) {
 				result[CommandEnum.UP] = true;
-			} else if (Input.getGamepadAxes(this.id)[AxisEnum.LEFT_Y] > ANALOG_TRESHOLD) {
+			} else if (Input.getGamePadAxes(this.id)[AxisEnum.LEFT_Y] > ANALOG_THRESHOLD) {
 				result[CommandEnum.DOWN] = true;
 			}
 
-			if (Input.getGamepadAxes(this.id)[AxisEnum.LEFT_X] < - ANALOG_TRESHOLD) {
+			if (Input.getGamePadAxes(this.id)[AxisEnum.LEFT_X] < - ANALOG_THRESHOLD) {
 				result[CommandEnum.LEFT] = true;
-			} else if (Input.getGamepadAxes(this.id)[AxisEnum.LEFT_X] > ANALOG_TRESHOLD) {
+			} else if (Input.getGamePadAxes(this.id)[AxisEnum.LEFT_X] > ANALOG_THRESHOLD) {
 				result[CommandEnum.RIGHT] = true;
 			}
 
-			var buttons = Input.getGamepadButtons(this.id);
+			var buttons = Input.getGamePadButtons(this.id);
 
-			for (var i in ButtonToCommandMap) {
-				if (buttons[i] && buttons[i].pressed) result[ButtonToCommandMap[i]] = true;
+			for (var i in ButtonToCommandMap) if (ButtonToCommandMap.hasOwnProperty(i)) {
+				if (buttons[i] && buttons[i][PRESSED]) result[ButtonToCommandMap[i]] = true;
 			}
 
 			return result;
 		};
 
-		return Gamepad;
+		return GamePad;
 
 	})();
 
 	var Input = (function () {
+
+		var AXES = "axes";
 
 		function Input() {
 			this.controllers = [];
@@ -608,20 +623,20 @@
 			this.pointers = [];
 			this.pointerQueue = [];
 			this.pointerRequestQueue = [];
-			this.gamepads = 0;
+			this.gamePads = 0;
 			this.waitKeyboard();
 			this.waitMouse();
 			this.waitTouch();
 		}
 
-		Input.getGamepadAxes = function (id) {
-			if (getGamepads()[id]) return getGamepads()[id].axes;
+		Input.getGamePadAxes = function (id) {
+			if (getGamePads()[id]) return getGamePads()[id][AXES];
 			return [];
 		};
 
-		Input.getGamepadButtons = function (id) {
-			var gamepad = getGamepads()[id];
-			return gamepad && gamepad.buttons || [];
+		Input.getGamePadButtons = function (id) {
+			var gamePad = getGamePads()[id];
+			return gamePad && gamePad.buttons || [];
 		};
 
 		Input.prototype.addController = function (device) {
@@ -634,8 +649,8 @@
 			this.checkPointerQueues();
 		};
 
-		Input.prototype.checkGamepads = function () {
-			if (getGamepads()[this.gamepads]) this.addController(new Gamepad(this.gamepads++));
+		Input.prototype.checkGamePads = function () {
+			if (getGamePads()[this.gamePads]) this.addController(new GamePad(this.gamePads++));
 		};
 
 		Input.prototype.checkControllerQueues = function () {
@@ -655,7 +670,7 @@
 		};
 
 		Input.prototype.getController = function (id) {
-			var id = id || 0;
+			id = id || 0;
 
 			if (this.controllers.length < id + 1) {
 				var controller = new Controller();
@@ -668,7 +683,7 @@
 		};
 
 		Input.prototype.getPointer = function (id) {
-			var id = id || 0;
+			id = id || 0;
 
 			if (this.pointers.length < id + 1) {
 				var pointer = new Pointer();
@@ -681,55 +696,50 @@
 		};
 
 		Input.prototype.update = function () {
-			this.checkGamepads();
+			this.checkGamePads();
 
-			for (var i in this.controllers) {
+			for (var i in this.controllers) if (this.controllers.hasOwnProperty(i)) {
 				var controller = this.controllers[i];
 				controller.update();
 			}
 
-			for (var i in this.pointers) {
-				var pointer = this.pointers[i];
+			for (var j in this.pointers) if (this.pointers.hasOwnProperty(j)) {
+				var pointer = this.pointers[j];
 				pointer.update();
 			}
 		};
 
 		Input.prototype.waitKeyboard = function () {
-			var EVENT = "keydown";
 			var that = this;
-			addEventListener(EVENT, onKeyDown, false);
+			addEventListener(KEY_DOWN, onKeyDown, false);
 
 			function onKeyDown(event) {
-				removeEventListener(EVENT, onKeyDown, false);
+				removeEventListener(KEY_DOWN, onKeyDown, false);
 				that.addController(new Keyboard(event));
 			}
 		};
 
 		Input.prototype.waitMouse = function () {
-			var EVENT = "mousedown";
 			var that = this;
-			addEventListener(EVENT, onMouseDown, false);
+			addEventListener(MOUSE_DOWN, onMouseDown, false);
 
 			function onMouseDown(event) {
-				removeEventListener(EVENT, onMouseDown, false);
+				removeEventListener(MOUSE_DOWN, onMouseDown, false);
 				that.addPointer(new Mouse(event));
 			}
 		};
 
 		Input.prototype.waitTouch = function () {
-			var EVENT = "touchstart";
 			var that = this;
-			addEventListener(EVENT, onTouchStart, false);
+			addEventListener(TOUCH_START, onTouchStart, false);
 
 			function onTouchStart(event) {
-				removeEventListener(EVENT, onTouchStart, false);
+				removeEventListener(TOUCH_START, onTouchStart, false);
 				that.addPointer(new Touch(event));
 			}
 		};
 
-		// private
-
-		function getGamepads() {
+		function getGamePads() {
 			if (navigator.getGamepads) return navigator.getGamepads();
 			return [];
 		}
@@ -792,8 +802,8 @@
 		function Keyboard(event) {
 			var that = this;
 			this.buffer = {};
-			addEventListener("keydown", onKeyDown, false);
-			addEventListener("keyup", onKeyUp, false);
+			addEventListener(KEY_DOWN, onKeyDown, false);
+			addEventListener(KEY_UP, onKeyUp, false);
 			onKeyDown(event);
 
 			function onKeyDown(event) {
@@ -813,7 +823,7 @@
 		Keyboard.prototype.getCommands = function () {
 			var result = {};
 
-			for (var i in this.buffer) {
+			for (var i in this.buffer) if (this.buffer.hasOwnProperty(i)) {
 				if (this.buffer[i]) result[i] = true;
 			}
 
@@ -834,14 +844,14 @@
 			this.elements.push(renderable);
 		};
 
-		RenderableList.prototype.render = function (graphics) {
+		RenderableList.prototype.render = function (context) {
 			for (var i = 0; i < this.elements.length; ++i) {
 				var renderable = this.elements[i];
-				renderable.render(graphics);
+				renderable.render(context);
 			}
 
 			this.elements.length = 0;
-		}
+		};
 
 		return RenderableList;
 
@@ -915,7 +925,7 @@
 			this.nextObjects = [];
 			if (++this.tick == this.expiration) this.expire();
 			return false;
-		}
+		};
 
 		Scene.prototype.getNext = function () {
 			if (this.delegate && this.delegate.getNext) return this.delegate.getNext();
@@ -956,7 +966,6 @@
 			this.delegate && this.delegate.update && this.delegate.update();
 		};
 
-		// private
 		function checkCollisions(gameObjects) {
 			var length = gameObjects.length;
 
@@ -1045,7 +1054,7 @@
 		};
 
 		Sound.prototype.update = function () {
-			for (var i in this.queue) {
+			for (var i in this.queue) if (this.queue.hasOwnProperty(i)) {
 				var sound = document.getElementById(i);
 				sound.pause();
 				if (sound.currentTime > 0) sound.currentTime = 0;
@@ -1083,8 +1092,8 @@
 			this.setMaxSpeedY();
 			this.setSpeedX();
 			this.setSpeedY();
-			this.setX(x || 0);
-			this.setY(y || 0);
+			this.setX(x);
+			this.setY(y);
 		}
 
 		Point.prototype.bounceX = function () {
@@ -1197,11 +1206,11 @@
 		};
 
 		Point.prototype.setX = function (x) {
-			this.x = x;
+			this.x = x || 0;
 		};
 
 		Point.prototype.setY = function (y) {
-			this.y = y;
+			this.y = y || 0;
 		};
 
 		Point.prototype.stop = function () {
@@ -1226,9 +1235,11 @@
 
 		function Rect(x, y, width, height) {
 			Point.call(this, x, y);
-			this.setHeight(height || 0);
-			this.setWidth(width || 0);
-		}; Rect.prototype = Object.create(Point.prototype);
+			this.setHeight(height);
+			this.setWidth(width);
+		}
+
+		Rect.prototype = Object.create(Point.prototype);
 
 		Rect.prototype.bounceFrom = function (collision) {
 			if ((this.getSpeedX() < 0 && collision.getLeft()) || (this.getSpeedX() > 0 && collision.getRight())) this.bounceX();
@@ -1239,17 +1250,14 @@
 			return this.getY() + this.getHeight() - 1;
 		};
 
-		// override
 		Rect.prototype.getCenter = function () {
 			return new Point(this.getCenterX(), this.getCenterY());
 		};
 
-		// override
 		Rect.prototype.getCenterX = function () {
 			return this.getX() + this.getHalfWidth();
 		};
 
-		// override
 		Rect.prototype.getCenterY = function () {
 			return this.getY() + this.getHalfHeight();
 		};
@@ -1357,7 +1365,7 @@
 		};
 
 		Rect.prototype.setHeight = function (height) {
-			this.height = height;
+			this.height = height || 0;
 		};
 
 		Rect.prototype.setLeft = function (x) {
@@ -1383,7 +1391,7 @@
 		};
 
 		Rect.prototype.setWidth = function (width) {
-			this.width = width;
+			this.width = width || 0;
 		};
 
 		return Rect;
@@ -1416,19 +1424,19 @@
 		};
 
 		Collision.prototype.setBottom = function (isBottom) {
-			this.isBottom = isBottom || true;
+			this.isBottom = isBottom == undefined || isBottom;
 		};
 
 		Collision.prototype.setLeft = function (isLeft) {
-			this.isLeft = isLeft || true;
+			this.isLeft = isLeft == undefined || isLeft;
 		};
 
 		Collision.prototype.setRight = function (isRight) {
-			this.isRight = isRight || true;
+			this.isRight = isRight == undefined || isRight;
 		};
 
 		Collision.prototype.setTop = function (isTop) {
-			this.isTop = isTop || true;
+			this.isTop = isTop == undefined || isTop;
 		};
 
 		return Collision;
@@ -1524,7 +1532,9 @@
 			this.animation = null;
 			this.boundary = null;
 			this.delegate = null;
-		}; Sprite.prototype = Object.create(Rect.prototype);
+		}
+
+		Sprite.prototype = Object.create(Rect.prototype);
 
 		Sprite.prototype.getImage = function () {
 			return this.animation.getImage();
@@ -1542,12 +1552,12 @@
 			this.delegate && this.delegate.onAnimationLoop && this.delegate.onAnimationLoop();
 		};
 
-		Sprite.prototype.render = function (graphics) {
+		Sprite.prototype.render = function (context) {
 			if (this.animation) {
 				var image = this.getImage();
 				var x = Math.floor(this.getX());
 				var y = Math.floor(this.getY());
-				graphics.drawImage(image, x, y, this.getWidth(), this.getHeight());
+				context.drawImage(image, x, y, this.getWidth(), this.getHeight());
 			}
 		};
 
@@ -1575,7 +1585,6 @@
 			this.setImage(document.getElementById(id));
 		};
 
-		// override
 		Sprite.prototype.sync = function () {
 			var result = Rect.prototype.sync.call(this);
 			if (this.animation && this.animation.update()) this.onAnimationLoop();
@@ -1601,7 +1610,9 @@
 			this.scene = null;
 			this.tags = {};
 			this.tick = 0;
-		}; GameObject.prototype = Object.create(Sprite.prototype);
+		}
+
+		GameObject.prototype = Object.create(Sprite.prototype);
 
 		GameObject.prototype.addTag = function (tag) {
 			this.tags[tag] = true;
@@ -1679,21 +1690,19 @@
 			this.expiration = expiration;
 		};
 
-		// override
-		GameObject.prototype.render = function (graphics) {
+		GameObject.prototype.render = function (context) {
 			if (!this.isVisible) return;
 
 			if (this.color) {
 				var x = Math.floor(this.getX());
 				var y = Math.floor(this.getY());
-				graphics.fillStyle = this.color;
-				graphics.fillRect(x, y, this.getWidth(), this.getHeight());
+				context.fillStyle = this.color;
+				context.fillRect(x, y, this.getWidth(), this.getHeight());
 			}
 
-			Sprite.prototype.render.call(this, graphics);
+			Sprite.prototype.render.call(this, context);
 		};
 
-		// override
 		GameObject.prototype.sync = function () {
 			if (this.getExpired()) return true;
 			if (++this.tick == this.expiration) this.expire();
@@ -1710,19 +1719,24 @@
 
 	var Text = (function () {
 
+		var FONT_SUFFIX = "Font";
+		var LINE_FEED = "\n";
 		var SPACE = 4;
+		var SPACE_CHARACTER = " ";
 		var SPACING = 0;
 
 		function Text(string) {
 			GameObject.call(this);
 			this.setString(string || "");
-		}; Text.prototype = Object.create(GameObject.prototype);
+		}
+
+		Text.prototype = Object.create(GameObject.prototype);
 
 		Text.prototype.getString = function () {
 			return this.string;
 		};
 
-		Text.prototype.parse = function (graphics) {
+		Text.prototype.parse = function (context) {
 			var height = 0;
 			var width = 0;
 			var x = 0;
@@ -1731,14 +1745,14 @@
 			for (var i = 0; i < this.string.length; ++i) {
 				var character = this.string[i];
 
-				if (character == " ") {
+				if (character == SPACE_CHARACTER) {
 					x += SPACE + SPACING;
-				} else if (character == "\n") {
+				} else if (character == LINE_FEED) {
 					x = 0;
 					y += height + SPACING;
 				} else {
-					var image = document.getElementById(character + "Font");
-					if (graphics) graphics.drawImage(image, this.getX() + x, this.getY() + y, image.width, image.height);
+					var image = document.getElementById(character + FONT_SUFFIX);
+					if (context) context.drawImage(image, this.getX() + x, this.getY() + y, image.width, image.height);
 					x += image.width + SPACING;
 					if (x > width) width = x;
 					if (image.height > height) height = image.height;
@@ -1749,9 +1763,8 @@
 			this.setHeight(y + height);
 		};
 
-		// override
-		Text.prototype.render = function (graphics) {
-			this.parse(graphics);
+		Text.prototype.render = function (context) {
+			this.parse(context);
 		};
 
 		Text.prototype.setString = function (string) {
@@ -1768,7 +1781,9 @@
 		function BaseTile(id) {
 			GameObject.call(this);
 			this.setImageId(id);
-		}; BaseTile.prototype = Object.create(GameObject.prototype);
+		}
+
+		BaseTile.prototype = Object.create(GameObject.prototype);
 
 		return BaseTile;
 
@@ -1776,16 +1791,18 @@
 
 	var BaseTransition = (function () {
 
+		var COLOR = "Black";
 		var FRAMES = 32;
 
 		function BaseTransition() {
 			GameObject.call(this);
-			this.setColor("Black");
+			this.setColor(COLOR);
 			this.setHeight(Quick.getCanvasHeight());
 			this.increase = Quick.getCanvasWidth() / FRAMES;
-		}; BaseTransition.prototype = Object.create(GameObject.prototype);
+		}
 
-		// override
+		BaseTransition.prototype = Object.create(GameObject.prototype);
+
 		BaseTransition.prototype.sync = function () {
 			if (this.getWidth() > Quick.getCanvasWidth()) return true;
 			this.increaseWidth(this.increase);
@@ -1798,14 +1815,13 @@
 	})();
 
 	function toDegrees(radians) {
-		return radians * 180 / Math.PI;
+		return radians * RADIAN_DEGREES / Math.PI;
 	}
 
 	function toRadians(degrees) {
-		return degrees * Math.PI / 180;
+		return degrees * Math.PI / RADIAN_DEGREES;
 	}
 
-	// exports
 	if (!window.com) window.com = {};
 	if (!window.com.dgsprb) window.com.dgsprb = {};
 
