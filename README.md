@@ -18,6 +18,3 @@ Though mainly focused on building games to be released at the Chrome Web Store, 
   * Open - Feel free to use, read and improve the code.
 
 Please check the [Wiki](https://github.com/dgsprb/quick/wiki) for API, demos, games and additional information.
-
-[![Code Climate](https://codeclimate.com/github/dgsprb/quick/badges/gpa.svg)](https://codeclimate.com/github/dgsprb/quick)
-[![Test Coverage](https://codeclimate.com/github/dgsprb/quick/badges/coverage.svg)](https://codeclimate.com/github/dgsprb/quick/coverage)
