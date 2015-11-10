@@ -1224,6 +1224,24 @@
 			return this.y;
 		};
 
+		Point.prototype.getDirection = function () {
+			var direction = new Direction();
+
+			if (this.getX() < this.getLastX()) {
+				direction.setLeft();
+			} else if (this.getX() > this.getLastX()) {
+				direction.setRight();
+			}
+
+			if (this.getY() < this.getLastY()) {
+				direction.setTop();
+			} else if (this.getY() > this.getLastY()) {
+				direction.setBottom();
+			}
+
+			return direction;
+		};
+
 		Point.prototype.getLastPosition = function () {
 			return new Point(this.getLastX(), this.getLastY());
 		};
@@ -1357,12 +1375,12 @@
 
 		Rect.prototype = Object.create(Point.prototype);
 
-		Rect.prototype.bounceFrom = function (collision) {
-			if ((this.getSpeedX() < 0 && collision.getLeft()) || (this.getSpeedX() > 0 && collision.getRight())) {
+		Rect.prototype.bounceFrom = function (direction) {
+			if ((this.getSpeedX() < 0 && direction.getLeft()) || (this.getSpeedX() > 0 && direction.getRight())) {
 				this.bounceX();
 			}
 
-			if ((this.getSpeedY() < 0 && collision.getTop()) || (this.getSpeedY() > 0 && collision.getBottom())) {
+			if ((this.getSpeedY() < 0 && direction.getTop()) || (this.getSpeedY() > 0 && direction.getBottom())) {
 				this.bounceY();
 			}
 		};
@@ -1384,7 +1402,7 @@
 		};
 
 		Rect.prototype.getCollision = function (rect) {
-			var collision = new Collision();
+			var direction = new Direction();
 
 			var ta = this.getTop();
 			var ra = this.getRight();
@@ -1399,18 +1417,18 @@
 			var lb = rect.getLeft();
 
 			if (xa <= lb && ra < rb) {
-				collision.setRight();
+				direction.setRight();
 			} else if (xa >= rb && la > lb) {
-				collision.setLeft();
+				direction.setLeft();
 			}
 
 			if (ya <= tb && ba < bb) {
-				collision.setBottom();
+				direction.setBottom();
 			} else if (ya >= bb && ta > tb) {
-				collision.setTop();
+				direction.setTop();
 			}
 
-			return collision;
+			return direction;
 		};
 
 		Rect.prototype.getHalfHeight = function () {
@@ -1519,48 +1537,48 @@
 
 	})();
 
-	var Collision = (function () {
+	var Direction = (function () {
 
-		function Collision() {
+		function Direction() {
 			this.isBottom = false;
 			this.isLeft = false;
 			this.isRight = false;
 			this.isTop = false;
 		}
 
-		Collision.prototype.getBottom = function () {
+		Direction.prototype.getBottom = function () {
 			return this.isBottom;
 		};
 
-		Collision.prototype.getLeft = function () {
+		Direction.prototype.getLeft = function () {
 			return this.isLeft;
 		};
 
-		Collision.prototype.getRight = function () {
+		Direction.prototype.getRight = function () {
 			return this.isRight;
 		};
 
-		Collision.prototype.getTop = function () {
+		Direction.prototype.getTop = function () {
 			return this.isTop;
 		};
 
-		Collision.prototype.setBottom = function (isBottom) {
+		Direction.prototype.setBottom = function (isBottom) {
 			this.isBottom = isBottom == undefined || isBottom;
 		};
 
-		Collision.prototype.setLeft = function (isLeft) {
+		Direction.prototype.setLeft = function (isLeft) {
 			this.isLeft = isLeft == undefined || isLeft;
 		};
 
-		Collision.prototype.setRight = function (isRight) {
+		Direction.prototype.setRight = function (isRight) {
 			this.isRight = isRight == undefined || isRight;
 		};
 
-		Collision.prototype.setTop = function (isTop) {
+		Direction.prototype.setTop = function (isTop) {
 			this.isTop = isTop == undefined || isTop;
 		};
 
-		return Collision;
+		return Direction;
 
 	})();
 
