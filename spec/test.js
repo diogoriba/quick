@@ -322,6 +322,47 @@
 			lastPosition = point.getLastPosition();
 			assert(20, lastPosition.getX());
 			assert(30, lastPosition.getY());
+
+			// direction
+			point = new Point();
+			assert(false, point.getDirection().getLeft());
+			assert(false, point.getDirection().getRight());
+			assert(false, point.getDirection().getTop());
+			assert(false, point.getDirection().getBottom());
+			point.sync()
+			assert(false, point.getDirection().getLeft());
+			assert(false, point.getDirection().getRight());
+			assert(false, point.getDirection().getTop());
+			assert(false, point.getDirection().getBottom());
+			point.sync()
+			point.moveX(1);
+			assert(false, point.getDirection().getLeft());
+			assert(true, point.getDirection().getRight());
+			assert(false, point.getDirection().getTop());
+			assert(false, point.getDirection().getBottom());
+			point.sync();
+			point.moveY(1);
+			assert(false, point.getDirection().getLeft());
+			assert(false, point.getDirection().getRight());
+			assert(false, point.getDirection().getTop());
+			assert(true, point.getDirection().getBottom());
+			point.sync();
+			point.moveX(-1);
+			assert(true, point.getDirection().getLeft());
+			assert(false, point.getDirection().getRight());
+			assert(false, point.getDirection().getTop());
+			assert(false, point.getDirection().getBottom());
+			point.sync();
+			point.moveY(-1);
+			assert(false, point.getDirection().getLeft());
+			assert(false, point.getDirection().getRight());
+			assert(true, point.getDirection().getTop());
+			assert(false, point.getDirection().getBottom());
+			point.sync()
+			assert(false, point.getDirection().getLeft());
+			assert(false, point.getDirection().getRight());
+			assert(false, point.getDirection().getTop());
+			assert(false, point.getDirection().getBottom());
 		}
 
 		return PointTest;
