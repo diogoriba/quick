@@ -119,6 +119,7 @@
 			assert(0, gameObject.getLayerIndex());
 			assert(false, gameObject.getEssential());
 			assert(false, gameObject.getSolid());
+			assert(true, gameObject.getVisible());
 
 			// expiration
 			gameObject = new GameObject();
@@ -131,6 +132,14 @@
 
 			assert(true, gameObject.getExpired());
 			assert(true, gameObject.sync());
+
+			// visibility
+			gameObject.setVisible();
+			assert(true, gameObject.getVisible());
+			gameObject.setVisible(true);
+			assert(true, gameObject.getVisible());
+			gameObject.setVisible(false);
+			assert(false, gameObject.getVisible());
 		}
 
 		return GameObjectTest;

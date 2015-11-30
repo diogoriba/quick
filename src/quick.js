@@ -1799,6 +1799,10 @@
 			return this.tick;
 		};
 
+		GameObject.prototype.getVisible = function () {
+			return this.isVisible;
+		};
+
 		GameObject.prototype.hasTag = function (tag) {
 			return this.tags[tag]
 		};
