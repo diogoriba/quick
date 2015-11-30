@@ -35,8 +35,8 @@
 		function Background() {
 			GameObject.call(this);
 			this.setColor("Black");
-			this.setHeight(Quick.getCanvasHeight());
-			this.setWidth(Quick.getCanvasWidth());
+			this.setHeight(Quick.getHeight());
+			this.setWidth(Quick.getWidth());
 		}; Background.prototype = Object.create(GameObject.prototype);
 
 		return Background;
@@ -58,13 +58,13 @@
 		Player.prototype.respond = function () {
 			if (this.controller.keyDown(CommandEnum.LEFT) && this.getLeft() > 0) {
 				this.moveX(-SPEED);
-			} else if (this.controller.keyDown(CommandEnum.RIGHT) && this.getRight() < Quick.getCanvasWidth()) {
+			} else if (this.controller.keyDown(CommandEnum.RIGHT) && this.getRight() < Quick.getWidth()) {
 				this.moveX(SPEED);
 			}
 
 			if (this.controller.keyDown(CommandEnum.UP) && this.getTop() > 0) {
 				this.moveY(-SPEED);
-			} else if (this.controller.keyDown(CommandEnum.DOWN) && this.getBottom() < Quick.getCanvasHeight()) {
+			} else if (this.controller.keyDown(CommandEnum.DOWN) && this.getBottom() < Quick.getHeight()) {
 				this.moveY(SPEED);
 			}
 		};
