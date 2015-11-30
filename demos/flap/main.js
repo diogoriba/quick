@@ -30,7 +30,7 @@
 		function Background() {
 			GameObject.call(this);
 			this.setColor("Blue");
-			this.setSize(Quick.getCanvasWidth(), Quick.getCanvasHeight());
+			this.setSize(Quick.getWidth(), Quick.getHeight());
 		}; Background.prototype = Object.create(GameObject.prototype);
 
 		return Background;
@@ -42,12 +42,12 @@
 		function Cloud() {
 			GameObject.call(this);
 			this.setImage(CLOUD_IMAGE);
-			this.setBoundary(new Rect(0, 0, Quick.getCanvasWidth(), Quick.getCanvasHeight()));
+			this.setBoundary(new Rect(0, 0, Quick.getWidth(), Quick.getHeight()));
 		}; Cloud.prototype = Object.create(GameObject.prototype);
 
 		// override
 		Cloud.prototype.offBoundary = function () {
-			this.setLeft(Quick.getCanvasRight());
+			this.setLeft(Quick.getRight());
 		};
 
 		return Cloud;
@@ -60,7 +60,7 @@
 			GameObject.call(this);
 			this.addTag("column");
 			this.setColor("DarkGray");
-			this.setHeight(Quick.getCanvasHeight());
+			this.setHeight(Quick.getHeight());
 			this.setSolid();
 		}; Column.prototype = Object.create(GameObject.prototype);
 
@@ -77,9 +77,9 @@
 
 		// override
 		Fog.prototype.update = function () {
-			if (this.getLeft() > -1 * this.getSpeedX() || this.getRight() < Quick.getCanvasWidth() - this.getSpeedX()) {
+			if (this.getLeft() > -1 * this.getSpeedX() || this.getRight() < Quick.getWidth() - this.getSpeedX()) {
 				var speed = this.getSpeedX();
-				this.moveX(Quick.getCanvasWidth() * -1 * speed / Math.abs(speed));
+				this.moveX(Quick.getWidth() * -1 * speed / Math.abs(speed));
 			}
 		};
 
@@ -97,12 +97,12 @@
 			this.add(cloud1);
 			var cloud2 = new Cloud();
 			cloud2.setSpeedX(-1);
-			cloud2.setRight(Quick.getCanvasWidth());
+			cloud2.setRight(Quick.getWidth());
 			cloud2.setImage(CLOUD_IMAGE_MIRROR);
 			this.add(cloud2);
 			var fog1 = new Fog();
 			fog1.setImageId("fogSprite0");
-			fog1.setRight(Quick.getCanvasWidth());
+			fog1.setRight(Quick.getWidth());
 			fog1.setSpeedX(1);
 			this.add(fog1);
 			var fog2 = new Fog();
@@ -146,8 +146,8 @@
 			this.setLayerIndex(1);
 			this.setSolid();
 			this.setSize(16);
-			this.setCenterX(Quick.getCanvasWidth() / 3);
-			this.setCenterY(Quick.getCanvasHeight() / 3);
+			this.setCenterX(Quick.getWidth() / 3);
+			this.setCenterY(Quick.getHeight() / 3);
 			this.setSpeedY(-7);
 		}; Player.prototype = Object.create(GameObject.prototype);
 
@@ -170,7 +170,7 @@
 		// override
 		Player.prototype.update = function () {
 			// checks for falling off the bottom of the screen
-			if (this.getTop() > Quick.getCanvasHeight()) {
+			if (this.getTop() > Quick.getHeight()) {
 				this.expire();
 			} else if (this.getTop() < 0) {
 				this.setTop(0);
@@ -193,12 +193,12 @@
 		function Wall() {
 			GameObject.call(this);
 			// the wall is only valid within our screen limits
-			this.setBoundary(new Rect(0, 0, Quick.getCanvasWidth(), Quick.getCanvasHeight()));
+			this.setBoundary(new Rect(0, 0, Quick.getWidth(), Quick.getHeight()));
 			this.setColor("Gray");
 			this.setWidth(16);
 			this.setHeight(56);
-			this.setLeft(Quick.getCanvasRight());
-			this.setTop(Quick.random(Quick.getCanvasHeight() - this.getHeight()));
+			this.setLeft(Quick.getRight());
+			this.setTop(Quick.random(Quick.getHeight() - this.getHeight()));
 			this.setSpeedX(-2);
 		}; Wall.prototype = Object.create(GameObject.prototype);
 

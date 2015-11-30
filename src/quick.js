@@ -96,7 +96,7 @@
 			input.addController(device);
 		};
 
-		Quick.clearCanvas = function () {
+		Quick.clear = function () {
 			var context = canvas.getContext(CONTEXT);
 			context.clearRect(0, 0, width, height);
 		};
@@ -106,43 +106,39 @@
 		};
 
 		Quick.getBoundary = function () {
-			return new Rect(0, 0, Quick.getCanvasWidth(), Quick.getCanvasHeight());
+			return new Rect(0, 0, Quick.getWidth(), Quick.getHeight());
 		};
 
-		Quick.getCanvasBottom = function () {
+		Quick.getBottom = function () {
 			return height - 1;
 		};
 
-		Quick.getCanvasCenter = function () {
-			return new Point(this.getCanvasCenterX(), this.getCanvasCenterY());
+		Quick.getCenter = function () {
+			return new Point(this.getCenterX(), this.getCenterY());
 		};
 
-		Quick.getCanvasCenterX = function () {
-			return Math.floor(this.getCanvasWidth() / 2);
+		Quick.getCenterX = function () {
+			return Math.floor(this.getWidth() / 2);
 		};
 
-		Quick.getCanvasCenterY = function () {
-			return Math.floor(this.getCanvasHeight() / 2);
+		Quick.getCenterY = function () {
+			return Math.floor(this.getHeight() / 2);
 		};
 
-		Quick.getCanvasHeight = function () {
+		Quick.getHeight = function () {
 			return height;
 		};
 
-		Quick.getCanvasOffsetLeft = function () {
+		Quick.getOffsetLeft = function () {
 			return canvas.offsetLeft;
 		};
 
-		Quick.getCanvasOffsetTop = function () {
+		Quick.getOffsetTop = function () {
 			return canvas.offsetTop;
 		};
 
-		Quick.getCanvasRight = function () {
+		Quick.getRight = function () {
 			return width - 1;
-		};
-
-		Quick.getCanvasWidth = function () {
-			return width;
 		};
 
 		Quick.getController = function (id) {
@@ -167,6 +163,10 @@
 
 		Quick.getRealWidth = function () {
 			return realWidth;
+		};
+
+		Quick.getWidth = function () {
+			return width;
 		};
 
 		Quick.load = function () {
@@ -411,9 +411,8 @@
 		};
 
 		Mouse.prototype.updateCoordinates = function (event) {
-			var x = event.x || event.clientX;
-			var y = event.y || event.clientY;
-			this.position.setPosition(x, y);
+			this.position.setX(event.x || event.clientX);
+			this.position.setY(event.y || event.clientY);
 		};
 
 		return Mouse;
@@ -466,7 +465,8 @@
 		Touch.prototype.updateCoordinates = function (event) {
 			var touches = event[CHANGED_TOUCHES];
 			var touch = touches[0];
-			this.position.setPosition(touch.pageX, touch.pageY);
+			this.position.setX(touch.pageX);
+			this.position.setY(touch.pageY);
 		};
 
 		return Touch;
@@ -507,9 +507,10 @@
 				this.hold = true;
 			}
 
-			var x = Math.floor((this.device.getX() - Quick.getCanvasOffsetLeft()) * Quick.getCanvasWidth() / Quick.getRealWidth());
-			var y = Math.floor((this.device.getY() - Quick.getCanvasOffsetTop()) * Quick.getCanvasHeight() / Quick.getRealHeight());
-			this.position.setPosition(x, y);
+			var realX = this.device.getX() - Quick.getOffsetLeft();
+			var realY = this.device.getY() - Quick.getOffsetTop();
+			this.position.setX(Math.floor(realX * Quick.getWidth() / Quick.getRealWidth()));
+			this.position.setY(Math.floor(realY * Quick.getHeight() / Quick.getRealHeight()));
 		};
 
 		Pointer.prototype.getPosition = function () {
@@ -1299,12 +1300,7 @@
 			this.maxSpeedY = maxSpeedY || 0;
 		};
 
-		Point.prototype.setPosition = function (x, y) {
-			this.setX(x);
-			this.setY(y);
-		};
-
-		Point.prototype.setPositionFromPoint = function (point) {
+		Point.prototype.setPosition = function (point) {
 			this.setX(point.getX());
 			this.setY(point.getY());
 		};
@@ -1485,12 +1481,7 @@
 			this.setY(y - this.getHeight() + 1);
 		};
 
-		Rect.prototype.setCenter = function (x, y) {
-			this.setCenterX(x);
-			this.setCenterY(y);
-		};
-
-		Rect.prototype.setCenterFromPoint = function (point) {
+		Rect.prototype.setCenter = function (point) {
 			this.setCenterX(point.getX());
 			this.setCenterY(point.getY());
 		};
@@ -1968,14 +1959,14 @@
 		function BaseTransition() {
 			GameObject.call(this);
 			this.setColor(COLOR);
-			this.setHeight(Quick.getCanvasHeight());
-			this.increase = Quick.getCanvasWidth() / FRAMES;
+			this.setHeight(Quick.getHeight());
+			this.increase = Quick.getWidth() / FRAMES;
 		}
 
 		BaseTransition.prototype = Object.create(GameObject.prototype);
 
 		BaseTransition.prototype.sync = function () {
-			if (this.getWidth() > Quick.getCanvasWidth()) {
+			if (this.getWidth() > Quick.getWidth()) {
 				return true;
 			}
 

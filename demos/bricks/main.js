@@ -18,8 +18,8 @@
 		function Background() {
 			GameObject.call(this);
 			this.setColor("Blue");
-			this.setWidth(Quick.getCanvasWidth());
-			this.setHeight(Quick.getCanvasHeight());
+			this.setWidth(Quick.getWidth());
+			this.setHeight(Quick.getHeight());
 		}; Background.prototype = Object.create(GameObject.prototype);
 
 		return Background;
@@ -42,7 +42,7 @@
 			this.setHeight(32 + Quick.random(32));
 			this.setSolid();
 			this.setBottom(-64);
-			this.setLeft(Quick.random(Quick.getCanvasWidth() - this.getWidth()));
+			this.setLeft(Quick.random(Quick.getWidth() - this.getWidth()));
 			this.setSpeedY(4);
 		}; Brick.prototype = Object.create(GameObject.prototype);
 
@@ -114,7 +114,7 @@
 			Scene.call(this);
 			this.add(new Background());
 			var ground = new Ground();
-			ground.setCenterX(Quick.getCanvasWidth() / 2);
+			ground.setCenterX(Quick.getWidth() / 2);
 			this.add(ground);
 			var player = new Player();
 			player.setCenterX(ground.getCenterX());
@@ -142,9 +142,9 @@
 			this.setColor("Green");
 			this.setImageId("groundSprite");
 			this.setSolid();
-			this.setWidth(Quick.getCanvasWidth() * 2);
+			this.setWidth(Quick.getWidth() * 2);
 			this.setHeight(32);
-			this.setBottom(Quick.getCanvasHeight() - 1);
+			this.setBottom(Quick.getHeight() - 1);
 		}; Ground.prototype = Object.create(GameObject.prototype);
 
 		return Ground;
@@ -200,7 +200,7 @@
 
 			if (this.controller.keyDown(CommandEnum.LEFT) && this.getLeft() > 0) {
 				this.moveX(-SPEED);
-			} else if (this.controller.keyDown(CommandEnum.RIGHT) && this.getRight() < Quick.getCanvasWidth()) {
+			} else if (this.controller.keyDown(CommandEnum.RIGHT) && this.getRight() < Quick.getWidth()) {
 				this.moveX(SPEED);
 			}
 
