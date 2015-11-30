@@ -21,8 +21,8 @@
 		function Background() {
 			GameObject.call(this);
 			this.setColor("Green");
-			this.setWidth(Quick.getCanvasWidth());
-			this.setHeight(Quick.getCanvasHeight());
+			this.setWidth(Quick.getWidth());
+			this.setHeight(Quick.getHeight());
 		}; Background.prototype = Object.create(GameObject.prototype);
 
 		return Background;
@@ -33,7 +33,7 @@
 		function Ball() {
 			GameObject.call(this);
 			this.setImageId("ballSprite");
-			this.setBoundary(new Rect(0, 0, Quick.getCanvasWidth(), Quick.getCanvasHeight()));
+			this.setBoundary(new Rect(0, 0, Quick.getWidth(), Quick.getHeight()));
 			this.setEssential();
 			this.setSolid();
 			this.setSpeedX(1 + Quick.random(3));
@@ -66,7 +66,7 @@
 			var verticalPipe1, verticalPipe2;
 			verticalPipe1 = new VerticalPipe();
 			verticalPipe2 = new VerticalPipe();
-			verticalPipe2.setRight(Quick.getCanvasWidth());
+			verticalPipe2.setRight(Quick.getWidth());
 			this.add(verticalPipe1);
 			this.add(verticalPipe2);
 			var ball = new Ball();
@@ -95,8 +95,8 @@
 			this.pointer = Quick.getPointer();
 			this.setImageId("paddleSprite");
 			this.setSolid();
-			this.setCenterX(Quick.getCanvasWidth() / 2);
-			this.setBottom(Quick.getCanvasHeight() - this.getHeight());
+			this.setCenterX(Quick.getWidth() / 2);
+			this.setBottom(Quick.getHeight() - this.getHeight());
 		}; Paddle.prototype = Object.create(GameObject.prototype);
 
 		// override
@@ -111,7 +111,7 @@
 				this.moveX(-4);
 			}
 
-			if (this.controller.keyDown(CommandEnum.RIGHT) && this.getRight() < Quick.getCanvasWidth()) {
+			if (this.controller.keyDown(CommandEnum.RIGHT) && this.getRight() < Quick.getWidth()) {
 				this.moveX(4);
 			}
 		};
@@ -137,7 +137,7 @@
 		function HorizontalPipe() {
 			Pipe.call(this);
 			this.setImageId("horizontalPipeSprite");
-			this.setWidth(Quick.getCanvasWidth());
+			this.setWidth(Quick.getWidth());
 		}; HorizontalPipe.prototype = Object.create(Pipe.prototype);
 
 		return HorizontalPipe;
@@ -149,7 +149,7 @@
 		function VerticalPipe() {
 			Pipe.call(this);
 			this.setImageId("verticalPipeSprite");
-			this.setHeight(Quick.getCanvasHeight());
+			this.setHeight(Quick.getHeight());
 		}; VerticalPipe.prototype = Object.create(Pipe.prototype);
 
 		return VerticalPipe;
