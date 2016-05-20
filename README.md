@@ -1,1 +1,1 @@
-Please go straight to the [Wiki](https://github.com/dgsprb/quick/wiki) for  information.
+Please go straight to the [Wiki](https://github.com/dgsprb/quick/wiki) for  information or feel free to make a [Donation](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=dgsprb%40yahoo%2ecom&lc=BR&item_name=Quick&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted) to this project.
