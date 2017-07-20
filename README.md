@@ -1,6 +1,6 @@
 Quick
 =====
-![Quick](http://dgsprb.github.io/games/quick.png)
+![Quick](http://diogoschneider.github.io/games/quick.png)
 
 Open multi-platform game engine in JavaScript with classes.
 
