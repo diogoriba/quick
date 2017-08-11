@@ -1,13 +1,12 @@
 (function () {
-
 	"use strict";
 
 	// imports
-	var CommandEnum = com.dgsprb.quick.CommandEnum;
-	var Quick = com.dgsprb.quick.Quick;
-	var GameObject = com.dgsprb.quick.GameObject;
-	var Rect = com.dgsprb.quick.Rect;
-	var Scene = com.dgsprb.quick.Scene;
+	var CommandEnum = quick.CommandEnum;
+	var Quick = quick.Quick;
+	var GameObject = quick.GameObject;
+	var Rect = quick.Rect;
+	var Scene = quick.Scene;
 
 	// static
 	function main() {
@@ -17,7 +16,6 @@
 	}
 
 	var Background = (function () {
-
 		function Background() {
 			GameObject.call(this);
 			this.setColor("Green");
@@ -29,7 +27,6 @@
 	})();
 
 	var Ball = (function () {
-
 		function Ball() {
 			GameObject.call(this);
 			this.setImageId("ballSprite");
@@ -53,11 +50,9 @@
 		};
 
 		return Ball;
-
 	})();
 
 	var FirstScene = (function () {
-
 		function FirstScene() {
 			Scene.call(this);
 			this.add(new Background());
@@ -83,11 +78,9 @@
 		};
 
 		return FirstScene;
-
 	})();
 
 	var Paddle = (function () {
-
 		function Paddle() {
 			GameObject.call(this);
 			this.addTag("paddle");
@@ -117,11 +110,9 @@
 		};
 
 		return Paddle;
-
 	})();
 
 	var Pipe = (function () {
-
 		function Pipe() {
 			GameObject.call(this);
 			this.addTag("pipe");
@@ -129,11 +120,9 @@
 		}; Pipe.prototype = Object.create(GameObject.prototype);
 
 		return Pipe;
-
 	})();
 
 	var HorizontalPipe = (function () {
-
 		function HorizontalPipe() {
 			Pipe.call(this);
 			this.setImageId("horizontalPipeSprite");
@@ -141,11 +130,9 @@
 		}; HorizontalPipe.prototype = Object.create(Pipe.prototype);
 
 		return HorizontalPipe;
-
 	})();
 
 	var VerticalPipe = (function () {
-
 		function VerticalPipe() {
 			Pipe.call(this);
 			this.setImageId("verticalPipeSprite");
@@ -153,9 +140,7 @@
 		}; VerticalPipe.prototype = Object.create(Pipe.prototype);
 
 		return VerticalPipe;
-
 	})();
 
 	main();
-
 })();

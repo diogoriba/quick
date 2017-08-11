@@ -1,53 +1,33 @@
 /**
- * Copyright (c) 2014, 2015 Diogo Schneider
- * 
+ * Copyright (c) 2014, 2017 Diogo Schneider
+ *
  * Released under The MIT License (MIT)
- * 
- * https://github.com/dgsprb/quick
+ *
+ * https://github.com/diogoschneider/quick
  */
 
 (function () {
-
 	"use strict";
 
-	var CANVAS_TAG = "canvas";
-	var CONTEXT = "2d";
-	var KEY_DOWN = "keydown";
-	var KEY_UP = "keyup";
-	var MOUSE_DOWN = "mousedown";
-	var MOUSE_MOVE = "mousemove";
-	var MOUSE_UP = "mouseup";
-	var RADIAN_DEGREES = 180;
-	var TOUCH_END = "touchend";
-	var TOUCH_MOVE = "touchmove";
-	var TOUCH_START = "touchstart";
-
 	var CommandEnum = {
-		"UP" : 0,
-		"DOWN" : 1,
-		"LEFT" : 2,
-		"RIGHT" : 3,
-		"A" : 4,
-		"B" : 5,
-		"X" : 6,
-		"Y" : 7,
-		"SELECT" : 8,
-		"START" : 9
+		"UP": 0,
+		"DOWN": 1,
+		"LEFT": 2,
+		"RIGHT": 3,
+		"A": 4,
+		"B": 5,
+		"X": 6,
+		"Y": 7,
+		"SELECT": 8,
+		"START": 9
 	};
 
 	var Quick  = (function () {
-
-		var DEFAULT_AUTO_SCALE = true;
 		var DEFAULT_FRAME_TIME = 30;
 		var DEFAULT_KEEP_ASPECT = false;
-		var DEFAULT_NAME = "Game";
-		var DEFAULT_NUMBER_OF_LAYERS = 1;
-		var IMG_TAG = "img";
 		var LOADING_TIMEOUT = 100;
-		var PX = "px";
-		var RESIZE_EVENT = "resize";
 
-		var autoScale = DEFAULT_AUTO_SCALE;
+		var autoScale = true;
 		var canvas;
 		var everyOther = true;
 		var frameTime;
@@ -56,8 +36,8 @@
 		var input;
 		var isRunning;
 		var isTransitioning = false;
-		var name = DEFAULT_NAME;
-		var numberOfLayers = DEFAULT_NUMBER_OF_LAYERS;
+		var name = "Quick Game";
+		var numberOfLayers = 1;
 		var realWidth = 0;
 		var realHeight = 0;
 		var renderableLists = [];
@@ -66,21 +46,20 @@
 		var sound;
 		var transition;
 		var width = 0, height = 0;
-
 		var Quick = {};
 
 		Quick.init = function (firstSceneFactory, canvasElement) {
 			sceneFactory = firstSceneFactory;
-			canvas = canvasElement || document.getElementsByTagName(CANVAS_TAG)[0];
+			canvas = canvasElement || document.getElementsByTagName("canvas")[0];
 			width = canvas.width;
 			height = canvas.height;
 			realWidth = width;
 			realHeight = height;
-			images = document.getElementsByTagName(IMG_TAG);
+			images = document.getElementsByTagName("img");
 			input = new Input();
 			isRunning = true;
 			sound = new Sound();
-			addEventListener(RESIZE_EVENT, scale, false);
+			addEventListener("resize", scale, false);
 			autoScale && scale();
 			polyfill();
 			this.setFrameTime();
@@ -97,7 +76,7 @@
 		};
 
 		Quick.clear = function () {
-			var context = canvas.getContext(CONTEXT);
+			var context = canvas.getContext("2d");
 			context.clearRect(0, 0, width, height);
 		};
 
@@ -245,7 +224,7 @@
 
 		function loop() {
 			var startTime = Date.now();
-			var context = canvas.getContext(CONTEXT);
+			var context = canvas.getContext("2d");
 			everyOther = !everyOther;
 			input.update();
 
@@ -312,16 +291,14 @@
 
 			realWidth = width;
 			realHeight = height;
-			canvas.style.width = width + PX;
-			canvas.style.height = height + PX;
+			canvas.style.width = width + "px";
+			canvas.style.height = height + "px";
 		}
 
 		return Quick;
-
 	})();
 
 	var ImageFactory = (function () {
-
 		var ImageFactory = {};
 
 		ImageFactory.flip = function (image) {
@@ -338,7 +315,7 @@
 			}
 
 			var radians = toRadians(degrees);
-			var canvas = document.createElement(CANVAS_TAG);
+			var canvas = document.createElement("canvas");
 			var sideA = image.width;
 			var sideB = image.height;
 
@@ -349,7 +326,7 @@
 
 			canvas.width = sideA;
 			canvas.height = sideB;
-			var context = canvas.getContext(CONTEXT);
+			var context = canvas.getContext("2d");
 			context.translate(canvas.width / 2, canvas.height / 2);
 			context.rotate(radians);
 			context.drawImage(image, -image.width / 2, -image.height / 2);
@@ -357,10 +334,10 @@
 		};
 
 		function invert(image, isMirror, isFlip) {
-			var canvas = document.createElement(CANVAS_TAG);
+			var canvas = document.createElement("canvas");
 			canvas.width = image.width;
 			canvas.height = image.height;
-			var context = canvas.getContext(CONTEXT);
+			var context = canvas.getContext("2d");
 			context.translate(isMirror ? canvas.width : 0, isFlip ? canvas.height : 0);
 			context.scale(isMirror ? -1 : 1, isFlip ? - 1 : 1);
 			context.drawImage(image, 0, 0);
@@ -368,18 +345,16 @@
 		}
 
 		return ImageFactory;
-
 	})();
 
 	var Mouse = (function () {
-
 		function Mouse(event) {
 			var that = this;
 			this.buffer = false;
 			this.position = new Point();
-			addEventListener(MOUSE_DOWN, onMouseDown, false);
-			addEventListener(MOUSE_MOVE, onMouseMove, false);
-			addEventListener(MOUSE_UP, onMouseUp, false);
+			addEventListener("mousedown", onMouseDown, false);
+			addEventListener("mousemove", onMouseMove, false);
+			addEventListener("mouseup", onMouseUp, false);
 			event && onMouseDown(event);
 
 			function onMouseDown(event) {
@@ -416,20 +391,16 @@
 		};
 
 		return Mouse;
-
 	})();
 
 	var Touch = (function () {
-
-		var CHANGED_TOUCHES = "changedTouches";
-
 		function Touch(event) {
 			var that = this;
 			this.buffer = false;
 			this.position = new Point();
-			addEventListener(TOUCH_END, onTouchEnd, false);
-			addEventListener(TOUCH_MOVE, onTouchMove, false);
-			addEventListener(TOUCH_START, onTouchStart, false);
+			addEventListener("touchend", onTouchEnd, false);
+			addEventListener("touchmove", onTouchMove, false);
+			addEventListener("touchstart", onTouchStart, false);
 			onTouchStart(event);
 
 			function onTouchEnd(event) {
@@ -463,18 +434,16 @@
 		};
 
 		Touch.prototype.updateCoordinates = function (event) {
-			var touches = event[CHANGED_TOUCHES];
+			var touches = event["changedTouches"];
 			var touch = touches[0];
 			this.position.setX(touch.pageX);
 			this.position.setY(touch.pageY);
 		};
 
 		return Touch;
-
 	})();
 
 	var Pointer = (function () {
-
 		function Pointer() {
 			this.active = false;
 			this.device = null;
@@ -518,11 +487,9 @@
 		};
 
 		return Pointer;
-
 	})();
 
 	var Controller = (function () {
-
 		function Controller() {
 			this.active = {};
 			this.device = null;
@@ -560,38 +527,35 @@
 		};
 
 		return Controller;
-
 	})();
 
 	var GamePad = (function () {
-
 		var ANALOG_THRESHOLD = 0.5;
-		var PRESSED = "pressed";
 
 		var AxisEnum = {
-			"LEFT_X" : 0,
-			"LEFT_Y" : 1,
-			"RIGHT_X" : 2,
-			"RIGHT_Y" : 3
+			"LEFT_X": 0,
+			"LEFT_Y": 1,
+			"RIGHT_X": 2,
+			"RIGHT_Y": 3
 		};
 
 		var ButtonEnum = {
-			"A" : 0,
-			"B" : 1,
-			"X" : 2,
-			"Y" : 3,
-			"L1" : 4,
-			"R1" : 5,
-			"L2" : 6,
-			"R2" : 7,
-			"SELECT" : 8,
-			"START" : 9,
-			"L3" : 10,
-			"R3" : 11,
-			"UP" : 12,
-			"DOWN" : 13,
-			"LEFT" : 14,
-			"RIGHT" : 15
+			"A": 0,
+			"B": 1,
+			"X": 2,
+			"Y": 3,
+			"L1": 4,
+			"R1": 5,
+			"L2": 6,
+			"R2": 7,
+			"SELECT": 8,
+			"START": 9,
+			"L3": 10,
+			"R3": 11,
+			"UP": 12,
+			"DOWN": 13,
+			"LEFT": 14,
+			"RIGHT": 15
 		};
 
 		var ButtonToCommandMap = {};
@@ -629,7 +593,7 @@
 
 			for (var i in ButtonToCommandMap) {
 				if (ButtonToCommandMap.hasOwnProperty(i)) {
-					if (buttons[i] && buttons[i][PRESSED]) {
+					if (buttons[i] && buttons[i]["pressed"]) {
 						result[ButtonToCommandMap[i]] = true;
 					}
 				}
@@ -639,13 +603,9 @@
 		};
 
 		return GamePad;
-
 	})();
 
 	var Input = (function () {
-
-		var AXES = "axes";
-
 		function Input() {
 			this.controllers = [];
 			this.controllerQueue = [];
@@ -661,7 +621,7 @@
 
 		Input.getGamePadAxes = function (id) {
 			if (getGamePads()[id]) {
-				return getGamePads()[id][AXES];
+				return getGamePads()[id]["axes"];
 			}
 
 			return [];
@@ -750,30 +710,30 @@
 
 		Input.prototype.waitKeyboard = function () {
 			var that = this;
-			addEventListener(KEY_DOWN, onKeyDown, false);
+			addEventListener("keydown", onKeyDown, false);
 
 			function onKeyDown(event) {
-				removeEventListener(KEY_DOWN, onKeyDown, false);
+				removeEventListener("keydown", onKeyDown, false);
 				that.addController(new Keyboard(event));
 			}
 		};
 
 		Input.prototype.waitMouse = function () {
 			var that = this;
-			addEventListener(MOUSE_DOWN, onMouseDown, false);
+			addEventListener("mousedown", onMouseDown, false);
 
 			function onMouseDown(event) {
-				removeEventListener(MOUSE_DOWN, onMouseDown, false);
+				removeEventListener("mousedown", onMouseDown, false);
 				that.addPointer(new Mouse(event));
 			}
 		};
 
 		Input.prototype.waitTouch = function () {
 			var that = this;
-			addEventListener(TOUCH_START, onTouchStart, false);
+			addEventListener("touchstart", onTouchStart, false);
 
 			function onTouchStart(event) {
-				removeEventListener(TOUCH_START, onTouchStart, false);
+				removeEventListener("touchstart", onTouchStart, false);
 				that.addPointer(new Touch(event));
 			}
 		};
@@ -787,33 +747,31 @@
 		}
 
 		return Input;
-
 	})();
 
 	var Keyboard = (function () {
-
 		var KeyEnum = {
-			"ENTER" : 13,
-			"SHIFT" : 16,
-			"CTRL" : 17,
-			"ALT" : 18,
-			"ESC" : 27,
-			"SPACE" : 32,
-			"LEFT" : 37,
-			"UP" : 38,
-			"RIGHT" : 39,
-			"DOWN" : 40,
-			"D" : 68,
-			"E" : 69,
-			"F" : 70,
-			"I" : 73,
-			"J" : 74,
-			"K" : 75,
-			"L" : 76,
-			"S" : 83,
-			"F5" : 116,
-			"F11" : 122,
-			"F12" : 123
+			"ENTER": 13,
+			"SHIFT": 16,
+			"CTRL": 17,
+			"ALT": 18,
+			"ESC": 27,
+			"SPACE": 32,
+			"LEFT": 37,
+			"UP": 38,
+			"RIGHT": 39,
+			"DOWN": 40,
+			"D": 68,
+			"E": 69,
+			"F": 70,
+			"I": 73,
+			"J": 74,
+			"K": 75,
+			"L": 76,
+			"S": 83,
+			"F5": 116,
+			"F11": 122,
+			"F12": 123
 		};
 
 		var KeyToCommandMap = {};
@@ -844,8 +802,8 @@
 		function Keyboard(event) {
 			var that = this;
 			this.buffer = {};
-			addEventListener(KEY_DOWN, onKeyDown, false);
-			addEventListener(KEY_UP, onKeyUp, false);
+			addEventListener("keydown", onKeyDown, false);
+			addEventListener("keyup", onKeyUp, false);
 			onKeyDown(event);
 
 			function onKeyDown(event) {
@@ -877,11 +835,9 @@
 		};
 
 		return Keyboard;
-
 	})();
 
 	var RenderableList = (function () {
-
 		function RenderableList() {
 			this.elements = [];
 		}
@@ -900,11 +856,9 @@
 		};
 
 		return RenderableList;
-
 	})();
 
 	var Scene = (function () {
-
 		function Scene() {
 			this.delegate = null;
 			this.gameObjects = [];
@@ -941,7 +895,6 @@
 					}
 				}
 			}
-
 		};
 
 		Scene.prototype.expire = function () {
@@ -1047,11 +1000,9 @@
 		}
 
 		return Scene;
-
 	})();
 
 	var Sound = (function () {
-
 		var DEFAULT_MUTE = false;
 		var DEFAULT_SOUND_EFFECTS_VOLUME = 0.3;
 
@@ -1173,11 +1124,9 @@
 		};
 
 		return Sound;
-
 	})();
 
 	var Point = (function () {
-
 		function Point(x, y) {
 			this.setAccelerationX();
 			this.setAccelerationY();
@@ -1358,11 +1307,9 @@
 		};
 
 		return Point;
-
 	})();
 
 	var Rect = (function () {
-
 		function Rect(x, y, width, height) {
 			Point.call(this, x, y);
 			this.setHeight(height);
@@ -1525,11 +1472,9 @@
 		};
 
 		return Rect;
-
 	})();
 
 	var Direction = (function () {
-
 		function Direction() {
 			this.isBottom = false;
 			this.isLeft = false;
@@ -1570,11 +1515,9 @@
 		};
 
 		return Direction;
-
 	})();
 
 	var Frame = (function () {
-
 		function Frame(image, duration) {
 			this.duration = duration || 0;
 			this.image = image || new Image();
@@ -1597,11 +1540,9 @@
 		};
 
 		return Frame;
-
 	})();
 
 	var Animation = (function () {
-
 		function Animation(frames) {
 			this.setFrames(frames);
 		}
@@ -1652,11 +1593,9 @@
 		};
 
 		return Animation;
-
 	})();
 
 	var Sprite = (function () {
-
 		function Sprite() {
 			Rect.call(this);
 			this.animation = null;
@@ -1733,11 +1672,9 @@
 		};
 
 		return Sprite;
-
 	})();
 
 	var GameObject = (function () {
-
 		function GameObject() {
 			Sprite.call(this);
 			this.color = null;
@@ -1801,7 +1738,7 @@
 		GameObject.prototype.init = function () {
 			this.delegate && this.delegate.init && this.delegate.init();
 		};
-		
+
 		GameObject.prototype.onCollision = function (gameObject) {
 			this.delegate && this.delegate.onCollision && this.delegate.onCollision(gameObject);
 		};
@@ -1866,15 +1803,10 @@
 		};
 
 		return GameObject;
-
 	})();
 
 	var Text = (function () {
-
-		var FONT_SUFFIX = "Font";
-		var LINE_FEED = "\n";
 		var SPACE = 4;
-		var SPACE_CHARACTER = " ";
 		var SPACING = 0;
 
 		function Text(string) {
@@ -1897,13 +1829,13 @@
 			for (var i = 0; i < this.string.length; ++i) {
 				var character = this.string[i];
 
-				if (character == SPACE_CHARACTER) {
+				if (character == " ") {
 					x += SPACE + SPACING;
-				} else if (character == LINE_FEED) {
+				} else if (character == "\n") {
 					x = 0;
 					y += height + SPACING;
 				} else {
-					var image = document.getElementById(character + FONT_SUFFIX);
+					var image = document.getElementById(character + "Font");
 
 					if (context) {
 						context.drawImage(image, this.getX() + x, this.getY() + y, image.width, image.height);
@@ -1935,11 +1867,9 @@
 		};
 
 		return Text;
-
 	})();
 
 	var BaseTile = (function () {
-
 		function BaseTile(id) {
 			GameObject.call(this);
 			this.setImageId(id);
@@ -1948,11 +1878,9 @@
 		BaseTile.prototype = Object.create(GameObject.prototype);
 
 		return BaseTile;
-
 	})();
 
 	var BaseTransition = (function () {
-
 		var COLOR = "Black";
 		var FRAMES = 32;
 
@@ -1976,45 +1904,35 @@
 		};
 
 		return BaseTransition;
-
 	})();
 
 	function toDegrees(radians) {
-		return radians * RADIAN_DEGREES / Math.PI;
+		return radians * 180 / Math.PI;
 	}
 
 	function toRadians(degrees) {
-		return degrees * Math.PI / RADIAN_DEGREES;
+		return degrees * Math.PI / 180;
 	}
 
 	function publish() {
-		if (!window.com) {
-			window.com = {};
-		}
-
-		if (!window.com.dgsprb) {
-			window.com.dgsprb = {};
-		}
-
-		window.com.dgsprb.quick = {
-			"Animation" : Animation,
-			"BaseTile" : BaseTile,
-			"BaseTransition" : BaseTransition,
-			"CommandEnum" : CommandEnum,
-			"Controller" : Controller,
-			"Frame" : Frame,
-			"GameObject" : GameObject,
-			"ImageFactory" : ImageFactory,
-			"Mouse" : Mouse,
-			"Point" : Point,
-			"Quick" : Quick,
-			"Rect" : Rect,
-			"Scene" : Scene,
-			"Sprite" : Sprite,
-			"Text" : Text
+		window.quick = {
+			"Animation": Animation,
+			"BaseTile": BaseTile,
+			"BaseTransition": BaseTransition,
+			"CommandEnum": CommandEnum,
+			"Controller": Controller,
+			"Frame": Frame,
+			"GameObject": GameObject,
+			"ImageFactory": ImageFactory,
+			"Mouse": Mouse,
+			"Point": Point,
+			"Quick": Quick,
+			"Rect": Rect,
+			"Scene": Scene,
+			"Sprite": Sprite,
+			"Text": Text
 		};
 	}
 
 	publish();
-
 })();

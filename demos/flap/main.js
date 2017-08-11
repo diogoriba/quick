@@ -1,17 +1,16 @@
 (function () {
-
 	"use strict";
 
 	// imports
-	var Animation = com.dgsprb.quick.Animation;
-	var BaseTransition = com.dgsprb.quick.BaseTransition;
-	var CommandEnum = com.dgsprb.quick.CommandEnum;
-	var Quick = com.dgsprb.quick.Quick;
-	var Frame = com.dgsprb.quick.Frame;
-	var GameObject = com.dgsprb.quick.GameObject;
-	var ImageFactory = com.dgsprb.quick.ImageFactory;
-	var Rect = com.dgsprb.quick.Rect;
-	var Scene = com.dgsprb.quick.Scene;
+	var Animation = quick.Animation;
+	var BaseTransition = quick.BaseTransition;
+	var CommandEnum = quick.CommandEnum;
+	var Quick = quick.Quick;
+	var Frame = quick.Frame;
+	var GameObject = quick.GameObject;
+	var ImageFactory = quick.ImageFactory;
+	var Rect = quick.Rect;
+	var Scene = quick.Scene;
 
 	// constants
 	var CLOUD_IMAGE = document.getElementById("cloudSprite");
@@ -26,7 +25,6 @@
 
 	// classes
 	var Background = (function () {
-
 		function Background() {
 			GameObject.call(this);
 			this.setColor("Blue");
@@ -34,15 +32,13 @@
 		}; Background.prototype = Object.create(GameObject.prototype);
 
 		return Background;
-
 	})();
 
 	var Cloud = (function () {
-
 		function Cloud() {
 			GameObject.call(this);
 			this.setImage(CLOUD_IMAGE);
-			this.setBoundary(new Rect(0, 0, Quick.getWidth(), Quick.getHeight()));
+			this.setBoundary(Quick.getBoundary());
 		}; Cloud.prototype = Object.create(GameObject.prototype);
 
 		// override
@@ -51,11 +47,9 @@
 		};
 
 		return Cloud;
-
 	})();
 
 	var Column = (function () {
-
 		function Column() {
 			GameObject.call(this);
 			this.addTag("column");
@@ -65,11 +59,9 @@
 		}; Column.prototype = Object.create(GameObject.prototype);
 
 		return Column;
-
 	})();
 
 	var Fog = (function () {
-
 		function Fog() {
 			GameObject.call(this);
 			this.setLayerIndex(2);
@@ -84,11 +76,9 @@
 		};
 
 		return Fog;
-
 	})();
 
 	var GameScene = (function () {
-
 		function GameScene() {
 			Scene.call(this);
 			this.add(new Background());
@@ -126,11 +116,9 @@
 		};
 
 		return GameScene;
-
 	})();
 
 	var Player = (function () {
-
 		var ANIMATION = new Animation([
 			new Frame(document.getElementById("birdSprite0"), 4),
 			new Frame(document.getElementById("birdSprite1"), 4),
@@ -160,7 +148,6 @@
 
 		// override
 		Player.prototype.onCollision = function (gameObject) {
-			// checks for collisions with the columns
 			if (gameObject.hasTag("column")) {
 				Quick.play("fallSound");
 				this.expire();
@@ -176,7 +163,7 @@
 				this.setTop(0);
 			}
 
-			// checks for A ou click for flapping or just apply some gravity
+			// checks for A or click for flapping or just apply some gravity
 			if (this.controller.keyPush(CommandEnum.A) || this.pointer.getPush()) {
 				this.flap();
 			} else if (this.getSpeedY() < 7) {
@@ -185,11 +172,9 @@
 		};
 
 		return Player;
-
 	})();
 
 	var Wall = (function () {
-
 		function Wall() {
 			GameObject.call(this);
 			// the wall is only valid within our screen limits
@@ -228,9 +213,7 @@
 		};
 
 		return Wall;
-
 	})();
 
 	main();
-
 })();

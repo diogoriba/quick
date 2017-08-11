@@ -1,12 +1,11 @@
 (function () {
-
 	"use strict";
 
 	// imports
-	var CommandEnum = com.dgsprb.quick.CommandEnum;
-	var Quick = com.dgsprb.quick.Quick;
-	var GameObject = com.dgsprb.quick.GameObject;
-	var Scene = com.dgsprb.quick.Scene;
+	var CommandEnum = quick.CommandEnum;
+	var Quick = quick.Quick;
+	var GameObject = quick.GameObject;
+	var Scene = quick.Scene;
 
 	function main() {
 		Quick.setName("Bricks");
@@ -14,7 +13,6 @@
 	}
 
 	var Background = (function () {
-
 		function Background() {
 			GameObject.call(this);
 			this.setColor("Blue");
@@ -23,11 +21,9 @@
 		}; Background.prototype = Object.create(GameObject.prototype);
 
 		return Background;
-
 	})();
 
 	var Brick = (function () {
-
 		function Brick() {
 			GameObject.call(this);
 			this.addTag("brick");
@@ -105,11 +101,9 @@
 		};
 
 		return Brick;
-
 	})();
 
 	var GameScene = (function () {
-
 		function GameScene() {
 			Scene.call(this);
 			this.add(new Background());
@@ -131,12 +125,9 @@
 		};
 
 		return GameScene;
-
 	})();
 
-	// class Ground extends GameObject
 	var Ground = (function () {
-
 		function Ground() {
 			GameObject.call(this);
 			this.setColor("Green");
@@ -148,12 +139,9 @@
 		}; Ground.prototype = Object.create(GameObject.prototype);
 
 		return Ground;
-
 	})();
 
-	// class Player extends GameObject
 	var Player = (function () {
-
 		var SPEED = 2;
 
 		function Player() {
@@ -212,9 +200,7 @@
 		};
 
 		return Player;
-
 	})();
 
 	main();
-
 })();

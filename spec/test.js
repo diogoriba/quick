@@ -19,15 +19,15 @@
 	}
 
 	// imports
-	var CommandEnum = com.dgsprb.quick.CommandEnum;
-	var Controller = com.dgsprb.quick.Controller;
-	var GameObject = com.dgsprb.quick.GameObject;
-	var Mouse = com.dgsprb.quick.Mouse;
-	var Point = com.dgsprb.quick.Point;
-	var Quick = com.dgsprb.quick.Quick;
-	var Rect = com.dgsprb.quick.Rect;
-	var Sprite = com.dgsprb.quick.Sprite;
-	var Text = com.dgsprb.quick.Text;
+	var CommandEnum = quick.CommandEnum;
+	var Controller = quick.Controller;
+	var GameObject = quick.GameObject;
+	var Mouse = quick.Mouse;
+	var Point = quick.Point;
+	var Quick = quick.Quick;
+	var Rect = quick.Rect;
+	var Sprite = quick.Sprite;
+	var Text = quick.Text;
 
 	// variables
 	var errors;
